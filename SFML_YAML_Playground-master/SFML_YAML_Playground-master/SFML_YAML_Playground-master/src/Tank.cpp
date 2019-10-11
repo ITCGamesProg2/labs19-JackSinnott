@@ -1,0 +1,99 @@
+#include "Tank.h"
+#include "LevelLoader.h"
+
+
+Tank::Tank(sf::Texture const & texture, sf::Vector2f const & pos)
+: m_texture(texture)
+{
+	initSprites(pos);
+
+	m_tankBase.setTexture(m_texture);
+	sf::IntRect baseRect(2, 43, 79, 43);
+	sf::IntRect turretRect (2,43,79,43);
+	m_tankBase.setTextureRect(baseRect);
+	m_tankBase.setOrigin(baseRect.width / 2.0, baseRect.height / 2.0);
+	m_turret.setOrigin(turretRect.width / 3.0, turretRect.height / 2.0);
+	m_tankBase.setPosition(pos);
+}
+
+void Tank::update(double dt)
+{	
+	position.x = (m_tankBase.getPosition().x + cos(m_rotation * MathUtility::DEG_TO_RAD) * m_speed * (dt / 1000));
+	position.y = (m_tankBase.getPosition().y + sin(m_rotation * MathUtility::DEG_TO_RAD) * m_speed * (dt / 1000));
+	
+	m_tankBase.setPosition(position);
+	m_tankBase.setRotation(m_rotation);
+
+	position.x = (m_turret.getPosition().x + cos(m_rotation * MathUtility::DEG_TO_RAD) * m_speed * (dt / 1000));
+	position.y = (m_turret.getPosition().y + sin(m_rotation * MathUtility::DEG_TO_RAD) * m_speed * (dt / 1000));
+
+	m_turret.setPosition(position);
+	m_turret.setRotation(m_rotation);
+
+	m_speed *= 0.999;
+}
+
+void Tank::render(sf::RenderWindow & window) 
+{
+	window.draw(m_tankBase);
+	window.draw(m_turret);
+}
+
+void Tank::increaseSpeed()
+{
+	if (m_speed < 100.0)
+	{
+		m_speed += 1;
+	}
+}
+
+void Tank::setPosition()
+{
+	m_tankBase.setPosition(100, 100);
+	m_turret.setPosition(100, 105);
+}
+
+void Tank::decreaseSpeed()
+{
+	if (m_speed > -100.0)
+	{
+		m_speed -= 1;
+	}
+}
+
+void Tank::increaseRotation()
+{
+	m_rotation += 1;
+	if (m_rotation == 360.0)
+	{
+		m_rotation = 0;
+	}
+}
+
+void Tank::decreaseRotation()
+{
+	m_rotation -= 1;
+	if (m_rotation == 0.0)
+	{
+		m_rotation = 359.0;
+	}
+}
+
+
+void Tank::initSprites(sf::Vector2f const & pos)
+{
+	// Initialise the tank base
+	m_tankBase.setTexture(m_texture);
+	sf::IntRect baseRect(2, 43, 79, 43);
+	m_tankBase.setTextureRect(baseRect);
+	m_tankBase.setOrigin(baseRect.width / 2.0, baseRect.height / 2.0);
+	m_tankBase.setPosition(pos);
+
+	// Initialise the turret
+	m_turret.setTexture(m_texture);
+	sf::IntRect turretRect(19, 1, 83, 31);
+	m_turret.setTextureRect(turretRect);
+	m_turret.setOrigin(turretRect.width / 3.0, turretRect.height / 2.0);
+	m_turret.setPosition(pos);
+
+}
