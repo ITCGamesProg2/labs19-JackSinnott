@@ -40,11 +40,20 @@ public:
 	/// </summary>
 	void decreaseRotation();
 
+	void increaseTurretRotation();
+
+	void decreaseTurretRotation();
+
+	// Processes control keys and applies speed/rotation as appropriate
+	void handleKeyInput();
+
 	// The tank speed.
 	double m_speed{ 0.0 };
 
 	// The current rotation as applied to tank base.
 	double m_rotation{ 0.0 };
+
+	double m_turretRotation{ 0.0 };
 
 private:
 	void initSprites(sf::Vector2f const & pos);
@@ -52,5 +61,5 @@ private:
 	sf::Sprite m_turret;
 	sf::Texture const & m_texture;
 	sf::Vector2f position{ 0,0 };
-
+	bool m_turretRotating = false;
 };

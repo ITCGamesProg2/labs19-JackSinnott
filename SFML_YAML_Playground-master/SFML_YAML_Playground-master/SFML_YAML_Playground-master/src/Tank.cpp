@@ -9,7 +9,7 @@ Tank::Tank(sf::Texture const & texture, sf::Vector2f const & pos)
 
 	m_tankBase.setTexture(m_texture);
 	sf::IntRect baseRect(2, 43, 79, 43);
-	sf::IntRect turretRect (2,43,79,43);
+	sf::IntRect turretRect (20,4,79,27);
 	m_tankBase.setTextureRect(baseRect);
 	m_tankBase.setOrigin(baseRect.width / 2.0, baseRect.height / 2.0);
 	m_turret.setOrigin(turretRect.width / 3.0, turretRect.height / 2.0);
@@ -18,18 +18,20 @@ Tank::Tank(sf::Texture const & texture, sf::Vector2f const & pos)
 
 void Tank::update(double dt)
 {	
+	handleKeyInput();
 	position.x = (m_tankBase.getPosition().x + cos(m_rotation * MathUtility::DEG_TO_RAD) * m_speed * (dt / 1000));
 	position.y = (m_tankBase.getPosition().y + sin(m_rotation * MathUtility::DEG_TO_RAD) * m_speed * (dt / 1000));
 	
 	m_tankBase.setPosition(position);
 	m_tankBase.setRotation(m_rotation);
+	
 
-	position.x = (m_turret.getPosition().x + cos(m_rotation * MathUtility::DEG_TO_RAD) * m_speed * (dt / 1000));
-	position.y = (m_turret.getPosition().y + sin(m_rotation * MathUtility::DEG_TO_RAD) * m_speed * (dt / 1000));
+	position.x = (m_tankBase.getPosition().x + cos(m_turretRotation * MathUtility::DEG_TO_RAD) * m_speed * (dt / 1000));
+	position.y = (m_tankBase.getPosition().y + sin(m_turretRotation * MathUtility::DEG_TO_RAD) * m_speed * (dt / 1000));
 
 	m_turret.setPosition(position);
-	m_turret.setRotation(m_rotation);
-
+	m_turret.setRotation(m_turretRotation);
+	
 	m_speed *= 0.999;
 }
 
@@ -64,6 +66,7 @@ void Tank::decreaseSpeed()
 void Tank::increaseRotation()
 {
 	m_rotation += 1;
+	m_turretRotation += 1;
 	if (m_rotation == 360.0)
 	{
 		m_rotation = 0;
@@ -73,9 +76,61 @@ void Tank::increaseRotation()
 void Tank::decreaseRotation()
 {
 	m_rotation -= 1;
+	m_turretRotation -= 1;
 	if (m_rotation == 0.0)
 	{
 		m_rotation = 359.0;
+	}
+}
+
+void Tank::increaseTurretRotation()
+{
+	m_turretRotation += 1;
+	if (m_turretRotation == 360.0)
+	{
+		m_turretRotation = 0;
+	}
+}
+
+void Tank::decreaseTurretRotation()
+{
+	m_turretRotation -= 1;
+	if (m_turretRotation == 0.0)
+	{
+		m_turretRotation = 359.0;
+	}
+}
+
+void Tank::handleKeyInput()
+{
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+	{
+		decreaseRotation();
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+	{
+		increaseSpeed();
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+	{
+		increaseRotation();
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+	{
+		decreaseSpeed();
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
+	{
+		decreaseTurretRotation();	
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::X))
+	{
+		increaseTurretRotation();	
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::C))
+	{
+		m_turret.setRotation(m_rotation);
+		m_turretRotation = m_rotation;
 	}
 }
 
