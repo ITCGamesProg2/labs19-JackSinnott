@@ -7,7 +7,7 @@ static double const MS_PER_UPDATE = 10.0;
 ////////////////////////////////////////////////////////////
 Game::Game()
 	: m_window(sf::VideoMode(ScreenSize::s_height, ScreenSize::s_width, 32), "SFML Playground", sf::Style::Default)
-	, m_tank(m_texture, m_level.m_tank.m_position)
+	, m_tank(m_texture, m_wallSprites)
 {
 	m_window.setVerticalSyncEnabled(true);
 
@@ -42,6 +42,7 @@ Game::Game()
 	// Now the level data is loaded, set the tank position.
 	m_tank.setPosition();
 
+	generateWalls();
 }
 
 ////////////////////////////////////////////////////////////
@@ -114,6 +115,23 @@ void Game::processGameEvents(sf::Event& event)
 	}
 }
 
+void Game::generateWalls()
+{
+
+	sf::IntRect wallRect(2, 129, 33, 23);
+	// Create the Walls 
+	for (ObstacleData const& obstacle : m_level.m_obstacles)
+	{
+		sf::Sprite sprite;
+		sprite.setTexture(m_texture);
+		sprite.setTextureRect(wallRect);
+		sprite.setOrigin(wallRect.width / 2.0, wallRect.height / 2.0);
+		sprite.setPosition(obstacle.m_position);
+		sprite.setRotation(obstacle.m_rotation);
+		m_wallSprites.push_back(sprite);
+	}
+}
+
 ////////////////////////////////////////////////////////////
 void Game::update(double dt)
 {
@@ -131,7 +149,10 @@ void Game::render()
 	{
 		m_window.draw(obstacle);
 	}
-
+	for (sf::Sprite& wall : m_wallSprites)
+	{
+		m_window.draw(wall);
+	}
 	m_window.display();
 }
 

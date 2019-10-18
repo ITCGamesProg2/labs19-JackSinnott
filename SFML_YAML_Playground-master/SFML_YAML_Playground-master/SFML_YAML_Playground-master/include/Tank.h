@@ -11,7 +11,7 @@
 class Tank
 {
 public:	
-	Tank(sf::Texture const & texture, sf::Vector2f const & pos);
+	Tank(sf::Texture const& texture, std::vector<sf::Sprite>& wallSprites);
 	void update(double dt);
 	void render(sf::RenderWindow & window);
 	
@@ -56,10 +56,11 @@ public:
 	double m_turretRotation{ 0.0 };
 
 private:
-	void initSprites(sf::Vector2f const & pos);
+	void initSprites();
 	sf::Sprite m_tankBase;
 	sf::Sprite m_turret;
 	sf::Texture const & m_texture;
 	sf::Vector2f position{ 0,0 };
-	bool m_turretRotating = false;
+	// A reference to the container of wall sprites.
+	std::vector<sf::Sprite>& m_wallSprites;
 };

@@ -1,19 +1,19 @@
 #include "Tank.h"
 #include "LevelLoader.h"
 
-
-Tank::Tank(sf::Texture const & texture, sf::Vector2f const & pos)
-: m_texture(texture)
+/// <summary>
+/// @brief Constructor that stores drawable state (texture, sprite) for the tank.
+/// Stores references to the texture and container of wall sprites. 
+/// Creates sprites for the tank base and turret from the supplied texture.
+/// </summary>
+/// <param name="texture">A reference to the sprite sheet texture</param>
+///< param name="texture">A reference to the container of wall sprites</param>  
+Tank::Tank(sf::Texture const& texture, std::vector<sf::Sprite>& wallSprites)
+	: m_texture(texture)
+	, m_wallSprites(wallSprites)
 {
-	initSprites(pos);
-
-	m_tankBase.setTexture(m_texture);
-	sf::IntRect baseRect(2, 43, 79, 43);
-	sf::IntRect turretRect (20,4,79,27);
-	m_tankBase.setTextureRect(baseRect);
-	m_tankBase.setOrigin(baseRect.width / 2.0, baseRect.height / 2.0);
-	m_turret.setOrigin(turretRect.width / 3.0, turretRect.height / 2.0);
-	m_tankBase.setPosition(pos);
+	// Initialises the tank base and turret sprites.
+	initSprites();
 }
 
 void Tank::update(double dt)
@@ -129,26 +129,25 @@ void Tank::handleKeyInput()
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::C))
 	{
-		m_turret.setRotation(m_rotation);
 		m_turretRotation = m_rotation;
 	}
 }
 
 
-void Tank::initSprites(sf::Vector2f const & pos)
+void Tank::initSprites()
 {
 	// Initialise the tank base
 	m_tankBase.setTexture(m_texture);
 	sf::IntRect baseRect(2, 43, 79, 43);
 	m_tankBase.setTextureRect(baseRect);
 	m_tankBase.setOrigin(baseRect.width / 2.0, baseRect.height / 2.0);
-	m_tankBase.setPosition(pos);
+	m_tankBase.setPosition(100);
 
 	// Initialise the turret
 	m_turret.setTexture(m_texture);
 	sf::IntRect turretRect(19, 1, 83, 31);
 	m_turret.setTextureRect(turretRect);
 	m_turret.setOrigin(turretRect.width / 3.0, turretRect.height / 2.0);
-	m_turret.setPosition(pos);
+	m_turret.setPosition(100);
 
 }
