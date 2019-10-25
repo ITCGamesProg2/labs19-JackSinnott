@@ -49,20 +49,22 @@ void Tank::render(sf::RenderWindow & window)
 
 void Tank::increaseSpeed()
 {
+	m_previousSpeed = m_speed;
 	if (m_speed < 100.0)
 	{
 		m_speed += 1;
 	}
 }
 
-void Tank::setPosition()
+void Tank::setPosition(int x, int y)
 {
-	m_tankBase.setPosition(100, 100);
-	m_turret.setPosition(100, 105);
+	m_tankBase.setPosition(x, y);
+	m_turret.setPosition(x, y);
 }
 
 void Tank::decreaseSpeed()
 {
+	m_previousSpeed = m_speed;
 	if (m_speed > -100.0)
 	{
 		m_speed -= 1;
@@ -82,11 +84,32 @@ void Tank::increaseRotation()
 
 void Tank::decreaseRotation()
 {
+	m_previousRotation = m_rotation; // NEW
 	m_rotation -= 1;
 	m_turretRotation -= 1;
 	if (m_rotation == 0.0)
 	{
 		m_rotation = 359.0;
+	}
+}
+
+void Tank::increaseTurretRotation()
+{
+	m_previousTurretRotation = m_turretRotation;
+	m_turretRotation += 1;
+	if (m_turretRotation == 360.0)
+	{
+		m_turretRotation = 0;
+	}
+}
+
+void Tank::decreaseTurretRotation()
+{
+	m_previousTurretRotation = m_turretRotation;
+	m_turretRotation -= 1;
+	if (m_turretRotation == 0.0)
+	{
+		m_turretRotation = 359.0;
 	}
 }
 
@@ -126,6 +149,10 @@ void Tank::deflect()
 			m_speed = -8;
 		}
 	}
+	else
+	{
+		m_enableRotation = true;
+	}
 }
 
 void Tank::adjustRotation()
@@ -151,27 +178,12 @@ void Tank::adjustRotation()
 	}
 }
 
-void Tank::increaseTurretRotation()
-{
-	m_previousTurretRotation = m_turretRotation;
-	m_turretRotation += 1;
-	if (m_turretRotation == 360.0)
-	{
-		m_turretRotation = 0;
-	}
-}
 
-void Tank::decreaseTurretRotation()
-{
-	m_turretRotation -= 1;
-	if (m_turretRotation == 0.0)
-	{
-		m_turretRotation = 359.0;
-	}
-}
 
 void Tank::handleKeyInput()
 {
+	m_previousPosition = m_tankBase.getPosition();
+
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 	{
 		decreaseRotation();

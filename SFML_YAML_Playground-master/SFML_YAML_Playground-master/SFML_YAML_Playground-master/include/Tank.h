@@ -1,7 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "MathUtility.h"
-#include <collection.h>
+#include "CollisionDetector.h"
 
 
 /// <summary>
@@ -21,7 +21,7 @@ public:
 	/// </summary>
 	void increaseSpeed();
 
-	void setPosition();
+	void setPosition(int x, int y);
 
 	/// <summary>
 	/// @brief Decreases the speed by 1, min speed is capped at -100.
@@ -88,4 +88,6 @@ private:
 	float m_previousRotation;
 	float m_previousTurretRotation;
 	bool m_enableRotation = true;
+	sf::Vector2f m_previousPosition;
+	float m_previousSpeed;
 };

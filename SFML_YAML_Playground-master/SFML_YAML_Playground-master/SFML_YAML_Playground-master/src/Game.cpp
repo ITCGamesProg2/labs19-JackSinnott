@@ -40,7 +40,7 @@ Game::Game()
 	}
 
 	// Now the level data is loaded, set the tank position.
-	m_tank.setPosition();
+	//m_tank.setPosition();
 
 	generateWalls();
 }
