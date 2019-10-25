@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "MathUtility.h"
+#include <collection.h>
 
 
 /// <summary>
@@ -40,6 +41,27 @@ public:
 	/// </summary>
 	void decreaseRotation();
 
+	/// <summary>
+/// @brief Checks for collisions between the tank and the walls.
+/// 
+/// </summary>
+/// <returns>True if collision detected between tank and wall.</returns>
+	bool checkWallCollision();
+
+	/// <summary>
+/// @brief Stops the tank if moving and applies a small increase in speed in the opposite direction of travel.
+/// If the tank speed is currently 0, the rotation is set to a value that is less than the previous rotation value
+///  (scenario: tank is stopped and rotates into a wall, so it gets rotated towards the opposite direction).
+/// If the tank is moving, further rotations are disabled and the previous tank position is restored.
+/// The tank speed is adjusted so that it will travel slowly in the opposite direction. The tank rotation 
+///  is also adjusted as above if necessary (scenario: tank is both moving and rotating, upon wall collision it's 
+///  speed is reversed but with a smaller magnitude, while it is rotated in the opposite direction of it's 
+///  pre-collision rotation).
+/// </summary>
+	void deflect();
+
+	void adjustRotation();
+
 	void increaseTurretRotation();
 
 	void decreaseTurretRotation();
@@ -63,4 +85,7 @@ private:
 	sf::Vector2f position{ 0,0 };
 	// A reference to the container of wall sprites.
 	std::vector<sf::Sprite>& m_wallSprites;
+	float m_previousRotation;
+	float m_previousTurretRotation;
+	bool m_enableRotation = true;
 };
