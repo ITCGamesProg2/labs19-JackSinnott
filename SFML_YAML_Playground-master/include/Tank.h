@@ -85,9 +85,9 @@ private:
 	sf::Vector2f position{ 0,0 };
 	// A reference to the container of wall sprites.
 	std::vector<sf::Sprite>& m_wallSprites;
-	float m_previousRotation;
-	float m_previousTurretRotation;
+	double m_previousRotation;
+	double m_previousTurretRotation;
 	bool m_enableRotation = true;
 	sf::Vector2f m_previousPosition;
-	float m_previousSpeed;
+	double m_previousSpeed;
 };

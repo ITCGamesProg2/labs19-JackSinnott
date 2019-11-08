@@ -73,7 +73,8 @@ void Tank::decreaseSpeed()
 
 void Tank::increaseRotation()
 {
-	m_previousRotation = m_rotation; // NEW
+	m_previousRotation = m_rotation;
+	m_previousTurretRotation = m_turretRotation;
 	m_rotation += 1;
 	m_turretRotation += 1;
 	if (m_rotation == 360.0)
@@ -84,7 +85,8 @@ void Tank::increaseRotation()
 
 void Tank::decreaseRotation()
 {
-	m_previousRotation = m_rotation; // NEW
+	m_previousRotation = m_rotation;
+	m_previousTurretRotation = m_turretRotation;
 	m_rotation -= 1;
 	m_turretRotation -= 1;
 	if (m_rotation == 0.0)
@@ -95,8 +97,8 @@ void Tank::decreaseRotation()
 
 void Tank::increaseTurretRotation()
 {
-	m_previousTurretRotation = m_turretRotation;
 	m_turretRotation += 1;
+	m_previousTurretRotation = m_turretRotation;
 	if (m_turretRotation == 360.0)
 	{
 		m_turretRotation = 0;
@@ -105,12 +107,15 @@ void Tank::increaseTurretRotation()
 
 void Tank::decreaseTurretRotation()
 {
-	m_previousTurretRotation = m_turretRotation;
 	m_turretRotation -= 1;
+	m_previousTurretRotation = m_turretRotation;
 	if (m_turretRotation == 0.0)
 	{
 		m_turretRotation = 359.0;
 	}
+
+	sf::Vector2f rotatedVector = thor::rotatedVector(sf::Vector2f(1, 0), m_turret.getRotation());
+
 }
 
 bool Tank::checkWallCollision()
@@ -211,6 +216,7 @@ void Tank::handleKeyInput()
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::C))
 	{
 		m_turretRotation = m_rotation;
+		m_previousTurretRotation = m_turretRotation;
 	}
 }
 
