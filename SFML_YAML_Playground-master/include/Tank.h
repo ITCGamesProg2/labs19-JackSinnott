@@ -13,6 +13,7 @@ class Tank
 {
 public:	
 	Tank(sf::Texture const& texture, std::vector<sf::Sprite>& wallSprites);
+
 	void update(double dt);
 	void render(sf::RenderWindow & window);
 	
@@ -22,6 +23,8 @@ public:
 	void increaseSpeed();
 
 	void setPosition(int x, int y);
+
+	sf::Vector2f  getPosition();
 
 	/// <summary>
 	/// @brief Decreases the speed by 1, min speed is capped at -100.

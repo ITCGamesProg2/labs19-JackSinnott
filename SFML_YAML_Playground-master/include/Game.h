@@ -4,6 +4,10 @@
 #include "ScreenSize.h"
 #include "LevelLoader.h"
 #include "Tank.h"
+#include "Thor/Time.hpp"
+#include <string.h>
+#include "Projectile.h"
+
 
 
 /// <summary>
@@ -42,7 +46,7 @@ public:
 	///  perform more update than render operations in one loop.
 	/// </summary>
 	void run();
-
+	
 protected:
 	/// <summary>
 	/// @brief Placeholder to perform updates to all game objects.
@@ -87,6 +91,7 @@ protected:
 
 	// An instance representing the player controlled tank.
 	Tank m_tank;
+	Projectile m_bullets;
 
 private:
 	// To store the game level data.
@@ -94,4 +99,11 @@ private:
 	sf::Sprite m_tankSprite;
 	// Wall sprites
 	std::vector<sf::Sprite> m_wallSprites;
+	// Set up timer variables 
+	sf::Time m_gameOverTimer;
+	thor::Timer m_time;
+	// Set up string for displaying HUD
+	sf::Text HUD_Text;
+	sf::Font HUD_Font;
+	
 };

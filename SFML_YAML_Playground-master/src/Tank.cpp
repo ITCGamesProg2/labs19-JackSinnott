@@ -62,6 +62,11 @@ void Tank::setPosition(int x, int y)
 	m_turret.setPosition(x, y);
 }
 
+sf::Vector2f Tank::getPosition()
+{
+	return position;
+}
+
 void Tank::decreaseSpeed()
 {
 	m_previousSpeed = m_speed;

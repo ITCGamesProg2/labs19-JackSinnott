@@ -7,10 +7,24 @@ static double const MS_PER_UPDATE = 10.0;
 ////////////////////////////////////////////////////////////
 Game::Game()
 	: m_window(sf::VideoMode(ScreenSize::s_height, ScreenSize::s_width, 32), "SFML Playground", sf::Style::Default)
-	, m_tank(m_texture, m_wallSprites)
+	, m_tank(m_texture, m_wallSprites),
+	m_bullets(m_texture, m_wallSprites, m_tank)
 {
 	m_window.setVerticalSyncEnabled(true);
 
+	m_gameOverTimer = sf::seconds(60.f);
+
+	m_time.reset(m_gameOverTimer);
+
+	if (!HUD_Font.loadFromFile("c:/windows/fonts/MTCORSVA.TTF"))
+	{
+		std::cout << "problem loading font file" << std::endl;
+	}
+	HUD_Text.setFont(HUD_Font);
+	sf::Vector2f center = sf::Vector2f(HUD_Text.getLocalBounds().width / 2.0f, HUD_Text.getLocalBounds().height / 2.0f);
+	HUD_Text.setOrigin(center);
+	HUD_Text.setPosition(m_window.getSize().x * 0.4f, 20.f);
+	HUD_Text.setFillColor(sf::Color::Black);
 
 	int currentLevel = 1;
 
@@ -41,7 +55,7 @@ Game::Game()
 
 	// Now the level data is loaded, set the tank position.
 	//m_tank.setPosition();
-
+	
 	generateWalls();
 }
 
@@ -65,7 +79,6 @@ void Game::run()
 			lag -= MS_PER_UPDATE;
 		}
 		update(MS_PER_UPDATE);
-
 		render();
 	}
 }
@@ -135,7 +148,17 @@ void Game::generateWalls()
 ////////////////////////////////////////////////////////////
 void Game::update(double dt)
 {
+	m_time.start();
+	HUD_Text.setString("Time remaining :" + std::to_string(static_cast<int>(m_time.getRemainingTime().asSeconds())));
+	if (m_time.isExpired())
+	{
+		m_window.close();
+	}
 	m_tank.update(dt);
+	m_bullets.update(dt);
+	m_bullets.handleKeyInput(m_tank.getPosition());
+	m_bullets.fired(dt, m_tank.getPosition(), m_tank.m_rotation);
+	
 }
 
 ////////////////////////////////////////////////////////////
@@ -144,6 +167,8 @@ void Game::render()
 	m_window.clear(sf::Color(0, 0, 0, 0));
 	m_window.draw(m_bgSprite);
 	m_tank.render(m_window);
+	m_bullets.render(m_window);
+	m_window.draw(HUD_Text);
 
 	for (sf::Sprite& obstacle : m_sprites)
 	{
@@ -153,6 +178,7 @@ void Game::render()
 	{
 		m_window.draw(wall);
 	}
+	
 	m_window.display();
 }
 
