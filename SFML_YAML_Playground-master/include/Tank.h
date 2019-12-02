@@ -22,6 +22,7 @@ public:
 	/// </summary>
 	void increaseSpeed();
 
+	// @brief Assigns position in window to tank
 	void setPosition(int x, int y);
 
 	sf::Vector2f  getPosition();

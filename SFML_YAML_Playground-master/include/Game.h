@@ -7,6 +7,8 @@
 #include "Thor/Time.hpp"
 #include <string.h>
 #include "Projectile.h"
+#include <ctime>
+#include <stdlib.h>
 
 
 
@@ -85,6 +87,12 @@ protected:
 	/// </summary>
 	void generateEnemies();
 
+	/// <summary>
+	/// @brief A random number between 1 and 4 to control which corner of window to start in.
+	/// </summary>
+	/// <returns></returns>
+	int randomTankSpawn();
+
 
 private:
 	// main window
@@ -127,5 +135,8 @@ private:
 	
 	// Enemy vector index
 	int m_nextTarget{ 0 };
+
+	// Bool to control if we have been assigned an initial position in window
+	bool positionEstablished = false;
 	
 };

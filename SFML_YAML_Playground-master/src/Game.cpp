@@ -181,6 +181,34 @@ void Game::generateEnemies()
 	}
 }
 
+int Game::randomTankSpawn()
+{
+	srand(time(NULL));
+	int spawnCorner = (rand() % 4) + 1;
+	switch (spawnCorner)
+	{
+	case 1: spawnCorner == 1;
+		m_tank.setPosition(0, 0);
+		break;
+	case 2: spawnCorner == 2;
+		m_tank.setPosition(1440, 0);
+		m_tank.m_rotation = 136;
+		m_tank.m_turretRotation = 136;
+		break;
+	case 3: spawnCorner == 3;
+		m_tank.setPosition(0, 900);
+		m_tank.m_rotation = 313;
+		m_tank.m_turretRotation = 313;
+		break;
+	case 4: spawnCorner == 4;
+		m_tank.setPosition(1440, 900);
+		break;
+	default:
+		break;
+	}
+	return 0;
+}
+
 ////////////////////////////////////////////////////////////
 void Game::update(double dt)
 {
@@ -194,7 +222,11 @@ void Game::update(double dt)
 	m_bullets.update(dt);
 	m_bullets.handleKeyInput(m_tank.getPosition());
 	m_bullets.fired(m_tank.m_turretRotation);
-
+	if (!positionEstablished)
+	{
+		randomTankSpawn();
+		positionEstablished = true;
+	}
 	if (m_stopWatch.getElapsedTime().asMilliseconds() > 1000)
 	{
 		m_nextTarget = (m_nextTarget + 1) % m_enemySprites.size();
