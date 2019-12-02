@@ -84,3 +84,12 @@ obstacles:
    - type: wall
      position: {x: 1032, y: 632}
      rotation: 0
+enemies:
+   - type: enemy
+     position: {x: 50, y: 100, offset: 20}
+   - type: enemy
+     position: {x: 90, y: 250, offset: 20}
+   - type: enemy
+     position: {x: 600, y: 400, offset: 20}
+   - type: enemy
+     position: {x: 1010, y: 648, offset: 20}

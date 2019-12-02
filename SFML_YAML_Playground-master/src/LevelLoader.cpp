@@ -19,6 +19,20 @@ void operator >> (const YAML::Node& obstacleNode, ObstacleData& obstacle)
 }
 
 /// <summary>
+/// @brief Extracts the enemy type, position and offset values
+/// </summary>
+/// <param name="enemyNode">A YAML node</param>
+/// <param name="enemy">A simple struct to store the obstacle data</param>
+void operator >> (const YAML::Node& enemyNode, EnemyData& enemy)
+{
+	enemy.m_type = enemyNode["type"].as<std::string>();
+	enemy.m_position.x = enemyNode["position"]["x"].as<float>();
+	enemy.m_position.y = enemyNode["position"]["y"].as<float>();
+	enemy.m_offset.x = enemyNode["position"]["offset"].as<float>();
+	enemy.m_offset.y = enemyNode["position"]["offset"].as<float>();
+}
+
+/// <summary>
 /// @brief Extracts the filename for the game background texture.
 /// 
 /// </summary>
@@ -64,6 +78,14 @@ void operator >> (const YAML::Node& levelNode, LevelData& level)
 		ObstacleData obstacle;
 		obstaclesNode[i] >> obstacle;
 		level.m_obstacles.push_back(obstacle);
+	}
+
+	const YAML::Node& enemiesNode = levelNode["enemies"].as<YAML::Node>();
+	for (unsigned i = 0; i < enemiesNode.size(); ++i)
+	{
+		EnemyData enemy;
+		enemiesNode[i] >> enemy;
+		level.m_enemies.push_back(enemy);
 	}
 }
 

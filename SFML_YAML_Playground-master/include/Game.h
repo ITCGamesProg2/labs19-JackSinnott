@@ -11,8 +11,8 @@
 
 
 /// <summary>
-/// @author RP
-/// @date September 2019
+/// @author Jack Sinnott
+/// @date November 2019
 /// @version 1.0
 /// 
 /// </summary>
@@ -74,36 +74,58 @@ protected:
 	void processGameEvents(sf::Event & event);
 
 	/// <summary>
-/// @brief Creates the wall sprites and loads them into a vector.
-/// Note that sf::Sprite is considered a light weight class, so 
-///  storing copies (instead of pointers to sf::Sprite) in std::vector is acceptable.
-/// </summary>
+	/// @brief Creates the wall sprites and loads them into a vector.
+	/// Note that sf::Sprite is considered a light weight class, so 
+	///  storing copies (instead of pointers to sf::Sprite) in std::vector is acceptable.
+	/// </summary>
 	void generateWalls();
 
+	/// <summary>
+	/// @brief Creates enemy tank Sprites and loads them into a vector
+	/// </summary>
+	void generateEnemies();
+
+
+private:
 	// main window
 	sf::RenderWindow m_window;
+
+	// Background image 
 	sf::Sprite m_bgSprite;
 	sf::Texture m_bgTexture;
-	std::vector<sf::Sprite>  m_sprites;
+
 	// A texture for the sprite sheet
-	sf::Texture m_spriteSheetTexture;
 	sf::Texture m_texture;
 
 	// An instance representing the player controlled tank.
 	Tank m_tank;
+
+	// An instance representing the tanks bullets
 	Projectile m_bullets;
 
-private:
 	// To store the game level data.
 	LevelData m_level;
-	sf::Sprite m_tankSprite;
+
 	// Wall sprites
 	std::vector<sf::Sprite> m_wallSprites;
-	// Set up timer variables 
+	sf::Sprite wallSprite;
+	std::vector<sf::Sprite> m_enemySprites;
+	sf::Sprite enemySprite;
+
+	// Set up timer variables
+	// Hud clock
+	// --------------------------------
 	sf::Time m_gameOverTimer;
 	thor::Timer m_time;
+	// --------------------------------
+	// Enemy draw clock
+	thor::StopWatch m_stopWatch;
+
 	// Set up string for displaying HUD
 	sf::Text HUD_Text;
 	sf::Font HUD_Font;
+	
+	// Enemy vector index
+	int m_nextTarget{ 0 };
 	
 };

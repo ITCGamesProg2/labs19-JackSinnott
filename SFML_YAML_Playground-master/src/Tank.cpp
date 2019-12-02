@@ -9,9 +9,11 @@
 /// </summary>
 /// <param name="texture">A reference to the sprite sheet texture</param>
 ///< param name="texture">A reference to the container of wall sprites</param>  
-Tank::Tank(sf::Texture const& texture, std::vector<sf::Sprite>& wallSprites)
+Tank::Tank(sf::Texture const& texture, std::vector<sf::Sprite>& wallSprites, std::vector<sf::Sprite>& enemySprites)
 	: m_texture(texture)
 	, m_wallSprites(wallSprites)
+	, m_enemySprites(enemySprites)
+
 {
 	// Initialises the tank base and turret sprites.
 	initSprites();

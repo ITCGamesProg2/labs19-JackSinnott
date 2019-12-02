@@ -7,28 +7,14 @@ static double const MS_PER_UPDATE = 10.0;
 ////////////////////////////////////////////////////////////
 Game::Game()
 	: m_window(sf::VideoMode(ScreenSize::s_height, ScreenSize::s_width, 32), "SFML Playground", sf::Style::Default)
-	, m_tank(m_texture, m_wallSprites),
-	m_bullets(m_texture, m_wallSprites, m_tank)
+	, m_tank(m_texture, m_wallSprites, m_enemySprites),
+	m_bullets(m_texture, m_wallSprites)
 {
 	m_window.setVerticalSyncEnabled(true);
-
-	m_gameOverTimer = sf::seconds(60.f);
-
-	m_time.reset(m_gameOverTimer);
-
-	if (!HUD_Font.loadFromFile("c:/windows/fonts/MTCORSVA.TTF"))
-	{
-		std::cout << "problem loading font file" << std::endl;
-	}
-	HUD_Text.setFont(HUD_Font);
-	sf::Vector2f center = sf::Vector2f(HUD_Text.getLocalBounds().width / 2.0f, HUD_Text.getLocalBounds().height / 2.0f);
-	HUD_Text.setOrigin(center);
-	HUD_Text.setPosition(m_window.getSize().x * 0.4f, 20.f);
-	HUD_Text.setFillColor(sf::Color::Black);
-
+	// --------------------------------------------------------------------------------------------------------------------
+	// Invokes our level loader to read the YAML data - will generate an exception if level loading fails.
 	int currentLevel = 1;
 
-	// Invokes our level loader to read the YAML data - will generate an exception if level loading fails.
 	try
 	{
 		LevelLoader::load(currentLevel, m_level);
@@ -39,24 +25,51 @@ Game::Game()
 		std::cout << e.what() << std::endl;
 		throw e;
 	}
+	// --------------------------------------------------------------------------------------------------------------------
+	// Timer initalisations 
+	// --------------------------------------------------------------------------------------------------------------------
+	m_gameOverTimer = sf::seconds(60.f);
+	m_stopWatch.start();
+	m_time.reset(m_gameOverTimer);
+	// --------------------------------------------------------------------------------------------------------------------
 
+	// Loading from files
+	// --------------------------------------------------------------------------------------------------------------------
+	if (!HUD_Font.loadFromFile("c:/windows/fonts/MTCORSVA.TTF"))
+	{
+		std::cout << "problem loading font file" << std::endl;
+	}
 	if (!m_bgTexture.loadFromFile(m_level.m_background.m_fileName))
 	{
 		std::cout << "Error loading background image" << std::endl;
 	}
-
-	m_bgSprite.setTexture(m_bgTexture);
-
 	if (!m_texture.loadFromFile("./resources/images/SpriteSheet.png"))
 	{
 		std::string s("Error loading texture");
 		throw std::exception(s.c_str());
 	}
+	// --------------------------------------------------------------------------------------------------------------------
 
-	// Now the level data is loaded, set the tank position.
-	//m_tank.setPosition();
+	// Assign loaded data from files to values
+	// --------------------------------------------------------------------------------------------------------------------
+	HUD_Text.setFont(HUD_Font);
+	m_bgSprite.setTexture(m_bgTexture);
+	// --------------------------------------------------------------------------------------------------------------------
+
+	// Give loaded values a set of parameters
+	// --------------------------------------------------------------------------------------------------------------------
+	sf::Vector2f center = sf::Vector2f(HUD_Text.getLocalBounds().width / 2.0f, HUD_Text.getLocalBounds().height / 2.0f);
+	HUD_Text.setOrigin(center);
+	HUD_Text.setPosition(m_window.getSize().x * 0.4f, 20.f);
+	HUD_Text.setFillColor(sf::Color::Black);
+	// --------------------------------------------------------------------------------------------------------------------
 	
+	// Functions we want called upon creation
+	// --------------------------------------------------------------------------------------------------------------------
 	generateWalls();
+	generateEnemies();
+	// --------------------------------------------------------------------------------------------------------------------
+	
 }
 
 ////////////////////////////////////////////////////////////
@@ -128,6 +141,7 @@ void Game::processGameEvents(sf::Event& event)
 	}
 }
 
+////////////////////////////////////////////////////////////
 void Game::generateWalls()
 {
 
@@ -135,13 +149,35 @@ void Game::generateWalls()
 	// Create the Walls 
 	for (ObstacleData const& obstacle : m_level.m_obstacles)
 	{
-		sf::Sprite sprite;
-		sprite.setTexture(m_texture);
-		sprite.setTextureRect(wallRect);
-		sprite.setOrigin(wallRect.width / 2.0, wallRect.height / 2.0);
-		sprite.setPosition(obstacle.m_position);
-		sprite.setRotation(obstacle.m_rotation);
-		m_wallSprites.push_back(sprite);
+		wallSprite.setTexture(m_texture);
+		wallSprite.setTextureRect(wallRect);
+		wallSprite.setOrigin(wallRect.width / 2.0, wallRect.height / 2.0);
+		wallSprite.setPosition(obstacle.m_position);
+		wallSprite.setRotation(obstacle.m_rotation);
+		m_wallSprites.push_back(wallSprite);
+	}
+}
+
+////////////////////////////////////////////////////////////
+void Game::generateEnemies()
+{
+	sf::IntRect enemyRect(107, 42, 77, 43);
+
+	for (EnemyData const& enemy : m_level.m_enemies)
+	{
+		
+		enemySprite.setTexture(m_texture);
+		enemySprite.setTextureRect(enemyRect);
+		enemySprite.setScale(.75, .75);
+		enemySprite.setOrigin(enemyRect.width / 2.0, enemyRect.height / 2.0);
+		int sign = rand() % 2;
+		if (sign == 0)
+		{
+			sign = -1;			
+		}		
+		enemySprite.setPosition(sf::Vector2f(enemy.m_position.x + (enemy.m_offset.x * sign), enemy.m_position.y + (enemy.m_offset.y * sign)));
+
+		m_enemySprites.push_back(enemySprite);
 	}
 }
 
@@ -157,8 +193,14 @@ void Game::update(double dt)
 	m_tank.update(dt);
 	m_bullets.update(dt);
 	m_bullets.handleKeyInput(m_tank.getPosition());
-	m_bullets.fired(dt, m_tank.getPosition(), m_tank.m_rotation);
-	
+	m_bullets.fired(m_tank.m_turretRotation);
+
+	if (m_stopWatch.getElapsedTime().asMilliseconds() > 1000)
+	{
+		m_nextTarget = (m_nextTarget + 1) % m_enemySprites.size();
+		m_stopWatch.restart();
+	}
+
 }
 
 ////////////////////////////////////////////////////////////
@@ -170,14 +212,14 @@ void Game::render()
 	m_bullets.render(m_window);
 	m_window.draw(HUD_Text);
 
-	for (sf::Sprite& obstacle : m_sprites)
-	{
-		m_window.draw(obstacle);
-	}
+
 	for (sf::Sprite& wall : m_wallSprites)
 	{
 		m_window.draw(wall);
 	}
+	
+	m_window.draw(m_enemySprites.at(m_nextTarget));
+	
 	
 	m_window.display();
 }

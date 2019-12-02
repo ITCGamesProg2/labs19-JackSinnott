@@ -19,6 +19,18 @@ struct ObstacleData
 };
 
 /// <summary>
+/// @brief A struct to represent Enemy data in the level
+/// 
+/// </summary>
+
+struct EnemyData
+{
+	std::string m_type;
+	sf::Vector2f m_position;
+	sf::Vector2f m_offset;
+};
+
+/// <summary>
 /// @brief A struct to store Background texture information.
 /// 
 /// </summary>
@@ -46,6 +58,7 @@ struct LevelData
 	BackgroundData m_background;
 	TankData m_tank;
 	std::vector<ObstacleData> m_obstacles;
+	std::vector<EnemyData> m_enemies;
 };
 
 /// <summary>

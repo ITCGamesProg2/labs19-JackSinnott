@@ -12,7 +12,7 @@
 class Tank
 {
 public:	
-	Tank(sf::Texture const& texture, std::vector<sf::Sprite>& wallSprites);
+	Tank(sf::Texture const& texture, std::vector<sf::Sprite>& wallSprites, std::vector<sf::Sprite>& enemySprite);
 
 	void update(double dt);
 	void render(sf::RenderWindow & window);
@@ -63,10 +63,19 @@ public:
 /// </summary>
 	void deflect();
 
+	/// <summary>
+	/// @brief Adjust the rotation of the tank and turret when a collision happens
+	/// </summary>
 	void adjustRotation();
 
+	/// <summary>
+	/// @brief Increases the turret rotation by 1 degrees, wraps to 359 degrees after 0.
+	/// </summary>
 	void increaseTurretRotation();
 
+	/// <summary>
+	/// @brief Decreses the turret rotation by 1 degrees, wraps to 0 after 259 degrees.
+	/// </summary>
 	void decreaseTurretRotation();
 
 	// Processes control keys and applies speed/rotation as appropriate
@@ -75,22 +84,48 @@ public:
 	// The tank speed.
 	double m_speed{ 0.0 };
 
+	// The tanks previous speed before update.
+	double m_previousSpeed;
+
 	// The current rotation as applied to tank base.
 	double m_rotation{ 0.0 };
 
+	// The last rotation before update of the tank base.
+	double m_previousRotation;
+
+	// The current rotation as applied to turret.
 	double m_turretRotation{ 0.0 };
 
+	// The last rotation before update as applied to the turret.
+	double m_previousTurretRotation;
+
 private:
+	/// <summary>
+	/// @brief assign textures to sprites and assign values to intRect for both turret and tank.
+	/// </summary>
 	void initSprites();
+
+	// The sprites for the tank base and tank turret.
 	sf::Sprite m_tankBase;
 	sf::Sprite m_turret;
+
+	// Single texture for both sprite images .
 	sf::Texture const & m_texture;
+
+	// The position in window of the tank.
 	sf::Vector2f position{ 0,0 };
+
+	// The previous position before update of the tank.
+	sf::Vector2f m_previousPosition;
+
 	// A reference to the container of wall sprites.
 	std::vector<sf::Sprite>& m_wallSprites;
-	double m_previousRotation;
-	double m_previousTurretRotation;
+
+	// A reference to the container of enemy sprites.
+	std::vector<sf::Sprite>& m_enemySprites;
+
+	// Bool to check if rotation has been applied
 	bool m_enableRotation = true;
-	sf::Vector2f m_previousPosition;
-	double m_previousSpeed;
+
+	
 };
