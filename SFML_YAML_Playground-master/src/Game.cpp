@@ -32,7 +32,6 @@ Game::Game()
 	m_stopWatch.start();
 	m_time.reset(m_gameOverTimer);
 	// --------------------------------------------------------------------------------------------------------------------
-
 	// Loading from files
 	// --------------------------------------------------------------------------------------------------------------------
 	if (!HUD_Font.loadFromFile("c:/windows/fonts/MTCORSVA.TTF"))
@@ -55,7 +54,6 @@ Game::Game()
 	HUD_Text.setFont(HUD_Font);
 	m_bgSprite.setTexture(m_bgTexture);
 	// --------------------------------------------------------------------------------------------------------------------
-
 	// Give loaded values a set of parameters
 	// --------------------------------------------------------------------------------------------------------------------
 	sf::Vector2f center = sf::Vector2f(HUD_Text.getLocalBounds().width / 2.0f, HUD_Text.getLocalBounds().height / 2.0f);
@@ -63,7 +61,6 @@ Game::Game()
 	HUD_Text.setPosition(m_window.getSize().x * 0.4f, 20.f);
 	HUD_Text.setFillColor(sf::Color::Black);
 	// --------------------------------------------------------------------------------------------------------------------
-	
 	// Functions we want called upon creation
 	// --------------------------------------------------------------------------------------------------------------------
 	generateWalls();
@@ -162,6 +159,7 @@ void Game::generateWalls()
 void Game::generateEnemies()
 {
 	sf::IntRect enemyRect(107, 42, 77, 43);
+	sf::IntRect enemyTurretRect(19, 1, 83, 31);
 
 	for (EnemyData const& enemy : m_level.m_enemies)
 	{
@@ -181,6 +179,7 @@ void Game::generateEnemies()
 	}
 }
 
+/// ///////////////////////////////////////////////////////////
 int Game::randomTankSpawn()
 {
 	srand(time(NULL));
@@ -244,19 +243,11 @@ void Game::render()
 	m_bullets.render(m_window);
 	m_window.draw(HUD_Text);
 
-
 	for (sf::Sprite& wall : m_wallSprites)
 	{
 		m_window.draw(wall);
 	}
 	
 	m_window.draw(m_enemySprites.at(m_nextTarget));
-	
-	
 	m_window.display();
 }
-
-
-
-
-

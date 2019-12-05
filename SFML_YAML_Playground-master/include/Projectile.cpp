@@ -62,6 +62,7 @@ void Projectile::fired(double t_rotation)
 			velocity.x = cos(t_rotation * MathUtility::DEG_TO_RAD) * m_speed;
 			velocity.y = sin(t_rotation * MathUtility::DEG_TO_RAD) * m_speed;
 		}
+		shot = false;
 	}
 	
 }

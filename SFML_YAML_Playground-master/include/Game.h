@@ -119,6 +119,7 @@ private:
 	sf::Sprite wallSprite;
 	std::vector<sf::Sprite> m_enemySprites;
 	sf::Sprite enemySprite;
+	sf::Sprite enemyTurretSprite;
 
 	// Set up timer variables
 	// Hud clock
