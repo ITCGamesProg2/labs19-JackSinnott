@@ -96,6 +96,7 @@ protected:
 	/// <returns></returns>
 	void randomTankSpawn();
 
+	void scoreOutput();
 
 private:
 	// main window
@@ -135,7 +136,8 @@ private:
 
 	// Set up string for displaying HUD
 	sf::Text HUD_Text;
-	sf::Font HUD_Font;
+	sf::Text scoreText;
+	sf::Font all_Purpose_Font;
 	
 	// Enemy vector index
 	int m_nextTarget{ 0 };

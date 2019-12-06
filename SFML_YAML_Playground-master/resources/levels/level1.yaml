@@ -90,7 +90,12 @@ enemies:
    - type: enemy
      position: {x: 90, y: 250, offset: 20}
    - type: enemy
+     position: {x: 300, y: 950, offset: 20}
+   - type: enemy
+     position: {x: 450, y: 1100, offset: 20}
+   - type: enemy
      position: {x: 600, y: 400, offset: 20}
    - type: enemy
      position: {x: 1010, y: 648, offset: 20}
+   
 	

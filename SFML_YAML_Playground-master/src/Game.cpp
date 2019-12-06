@@ -34,7 +34,7 @@ Game::Game()
 	// --------------------------------------------------------------------------------------------------------------------
 	// Loading from files
 	// --------------------------------------------------------------------------------------------------------------------
-	if (!HUD_Font.loadFromFile("c:/windows/fonts/MTCORSVA.TTF"))
+	if (!all_Purpose_Font.loadFromFile("c:/windows/fonts/MTCORSVA.TTF"))
 	{
 		std::cout << "problem loading font file" << std::endl;
 	}
@@ -51,15 +51,19 @@ Game::Game()
 
 	// Assign loaded data from files to values
 	// --------------------------------------------------------------------------------------------------------------------
-	HUD_Text.setFont(HUD_Font);
+	HUD_Text.setFont(all_Purpose_Font);
+	scoreText.setFont(all_Purpose_Font);
 	m_bgSprite.setTexture(m_bgTexture);
 	// --------------------------------------------------------------------------------------------------------------------
 	// Give loaded values a set of parameters
 	// --------------------------------------------------------------------------------------------------------------------
-	sf::Vector2f center = sf::Vector2f(HUD_Text.getLocalBounds().width / 2.0f, HUD_Text.getLocalBounds().height / 2.0f);
-	HUD_Text.setOrigin(center);
+	sf::Vector2f HUD_Center = sf::Vector2f(HUD_Text.getLocalBounds().width / 2.0f, HUD_Text.getLocalBounds().height / 2.0f);
+	HUD_Text.setOrigin(HUD_Center);
 	HUD_Text.setPosition(m_window.getSize().x * 0.4f, 20.f);
 	HUD_Text.setFillColor(sf::Color::Black);
+
+	sf::Vector2f score_Center = sf::Vector2f(scoreText.getLocalBounds().width / 2.0f, scoreText.getLocalBounds().height / 2.0f);
+	scoreText.setOrigin(score_Center);
 	// --------------------------------------------------------------------------------------------------------------------
 	// Functions we want called upon creation
 	// --------------------------------------------------------------------------------------------------------------------
@@ -160,7 +164,7 @@ void Game::generateEnemies()
 {
 	sf::IntRect enemyRect(107, 42, 77, 43);
 	sf::IntRect enemyTurretRect(19, 1, 83, 31);
-	EnemyData enemy;
+	// Create the enemies
 	for (EnemyData const& enemy : m_level.m_enemies)
 	{
 		
@@ -168,18 +172,12 @@ void Game::generateEnemies()
 		enemySprite.setTextureRect(enemyRect);
 		enemySprite.setScale(.75, .75);
 		enemySprite.setOrigin(enemyRect.width / 2.0, enemyRect.height / 2.0);
-
-		/*if (enemySprite.getPosition() == wallSprite.getPosition()
-			|| enemySprite.getPosition() == enemySprite.getPosition())
-		{
-			enemySprite.setPosition(sf::Vector2f(enemy.m_position.x + (enemy.m_offset.x * sign), enemy.m_position.y + (enemy.m_offset.y * sign)));
-
-		}*/
 		
 	}
 	enemyUpdatedPosition();
 }
 
+///////////////////////////////////////////////////////
 void Game::enemyUpdatedPosition()
 {
 	int sign = rand() % 2;
@@ -187,14 +185,17 @@ void Game::enemyUpdatedPosition()
 	{
 		sign = -1;
 	}
+	// Set Positions of enemies
 	for (EnemyData const& enemy : m_level.m_enemies)
 	{	
 		enemySprite.setPosition(sf::Vector2f(enemy.m_position.x + (enemy.m_offset.x * sign), enemy.m_position.y + (enemy.m_offset.y * sign)));
 		m_enemySprites.push_back(enemySprite);
 	}
+	// Change position of enemies so they respawn elsewhere
 	if (enemySprite.getPosition() == enemySprite.getPosition())
 	{
-		enemySprite.setPosition(enemySprite.getPosition().x + ())
+		enemySprite.setPosition(enemySprite.getPosition().x + (m_level.m_enemies.at(0).m_offset.x * sign),
+			enemySprite.getPosition().y + (m_level.m_enemies.at(0).m_offset.y * sign));
 	}
 	
 }
@@ -233,6 +234,12 @@ void Game::randomTankSpawn()
 	}
 }
 
+void Game::scoreOutput()
+{
+	
+	m_window.close();
+}
+
 ////////////////////////////////////////////////////////////
 void Game::update(double dt)
 {
@@ -240,7 +247,7 @@ void Game::update(double dt)
 	HUD_Text.setString("Time remaining :" + std::to_string(static_cast<int>(m_time.getRemainingTime().asSeconds())));
 	if (m_time.isExpired())
 	{
-		m_window.close();
+		scoreOutput();
 	}
 	m_tank.update(dt);
 	m_bullets.update(dt);
