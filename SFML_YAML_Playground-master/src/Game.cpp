@@ -167,14 +167,11 @@ void Game::generateEnemies()
 	// Create the enemies
 	for (EnemyData const& enemy : m_level.m_enemies)
 	{
-		
 		enemySprite.setTexture(m_texture);
 		enemySprite.setTextureRect(enemyRect);
 		enemySprite.setScale(.75, .75);
 		enemySprite.setOrigin(enemyRect.width / 2.0, enemyRect.height / 2.0);
-		
 	}
-	enemyUpdatedPosition();
 }
 
 ///////////////////////////////////////////////////////
@@ -210,22 +207,22 @@ void Game::randomTankSpawn()
 	switch (spawnCorner)
 	{
 	case 1: spawnCorner == 1;
-		m_tank.setPosition(0, 0);
+		m_tank.setPosition(30, 30);
 		m_tank.m_rotation = 45;
 		m_tank.m_turretRotation = 45;
 		break;
 	case 2: spawnCorner == 2;
-		m_tank.setPosition(1440, 0);
+		m_tank.setPosition(1410, 30);
 		m_tank.m_rotation = 136;
 		m_tank.m_turretRotation = 136;
 		break;
 	case 3: spawnCorner == 3;
-		m_tank.setPosition(0, 900);
+		m_tank.setPosition(30, 870);
 		m_tank.m_rotation = 313;
 		m_tank.m_turretRotation = 313;
 		break;
 	case 4: spawnCorner == 4;
-		m_tank.setPosition(1440, 900);
+		m_tank.setPosition(1410, 870);
 		m_tank.m_rotation = 225;
 		m_tank.m_turretRotation = 225;
 		break;
@@ -263,7 +260,7 @@ void Game::update(double dt)
 		m_nextTarget = (m_nextTarget + 1) % m_enemySprites.size();
 		m_stopWatch.restart();
 	}
-
+	enemyUpdatedPosition();
 }
 
 ////////////////////////////////////////////////////////////
