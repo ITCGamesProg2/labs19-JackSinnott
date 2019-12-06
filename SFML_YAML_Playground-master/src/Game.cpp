@@ -160,7 +160,7 @@ void Game::generateEnemies()
 {
 	sf::IntRect enemyRect(107, 42, 77, 43);
 	sf::IntRect enemyTurretRect(19, 1, 83, 31);
-
+	EnemyData enemy;
 	for (EnemyData const& enemy : m_level.m_enemies)
 	{
 		
@@ -168,26 +168,50 @@ void Game::generateEnemies()
 		enemySprite.setTextureRect(enemyRect);
 		enemySprite.setScale(.75, .75);
 		enemySprite.setOrigin(enemyRect.width / 2.0, enemyRect.height / 2.0);
-		int sign = rand() % 2;
-		if (sign == 0)
-		{
-			sign = -1;			
-		}		
-		enemySprite.setPosition(sf::Vector2f(enemy.m_position.x + (enemy.m_offset.x * sign), enemy.m_position.y + (enemy.m_offset.y * sign)));
 
-		m_enemySprites.push_back(enemySprite);
+		/*if (enemySprite.getPosition() == wallSprite.getPosition()
+			|| enemySprite.getPosition() == enemySprite.getPosition())
+		{
+			enemySprite.setPosition(sf::Vector2f(enemy.m_position.x + (enemy.m_offset.x * sign), enemy.m_position.y + (enemy.m_offset.y * sign)));
+
+		}*/
+		
 	}
+	enemyUpdatedPosition();
 }
 
-/// ///////////////////////////////////////////////////////////
-int Game::randomTankSpawn()
+void Game::enemyUpdatedPosition()
 {
-	srand(time(NULL));
+	int sign = rand() % 2;
+	if (sign == 0)
+	{
+		sign = -1;
+	}
+	for (EnemyData const& enemy : m_level.m_enemies)
+	{	
+		enemySprite.setPosition(sf::Vector2f(enemy.m_position.x + (enemy.m_offset.x * sign), enemy.m_position.y + (enemy.m_offset.y * sign)));
+		m_enemySprites.push_back(enemySprite);
+	}
+	if (enemySprite.getPosition() == enemySprite.getPosition())
+	{
+		enemySprite.setPosition(enemySprite.getPosition().x + ())
+	}
+	
+}
+
+	/// <summary>
+	/// @brief switch statement to spawn tank in random corner and set its rotation to be
+	/// facing the middle of the screen
+	/// </summary>
+void Game::randomTankSpawn()
+{
 	int spawnCorner = (rand() % 4) + 1;
 	switch (spawnCorner)
 	{
 	case 1: spawnCorner == 1;
 		m_tank.setPosition(0, 0);
+		m_tank.m_rotation = 45;
+		m_tank.m_turretRotation = 45;
 		break;
 	case 2: spawnCorner == 2;
 		m_tank.setPosition(1440, 0);
@@ -201,11 +225,12 @@ int Game::randomTankSpawn()
 		break;
 	case 4: spawnCorner == 4;
 		m_tank.setPosition(1440, 900);
+		m_tank.m_rotation = 225;
+		m_tank.m_turretRotation = 225;
 		break;
 	default:
 		break;
 	}
-	return 0;
 }
 
 ////////////////////////////////////////////////////////////

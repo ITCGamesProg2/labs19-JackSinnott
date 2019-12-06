@@ -62,6 +62,9 @@ private:
 	sf::Sprite m_bullet;
 	sf::Texture const &m_texture;
 
+	thor::Timer m_rateOfFire;
+	sf::Time m_fireTime;
+
 	// data variables for collision detection
 	std::vector<sf::Sprite>& m_wallSprites;
 

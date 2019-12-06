@@ -93,3 +93,4 @@ enemies:
      position: {x: 600, y: 400, offset: 20}
    - type: enemy
      position: {x: 1010, y: 648, offset: 20}
+	

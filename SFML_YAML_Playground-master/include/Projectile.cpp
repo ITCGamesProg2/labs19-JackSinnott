@@ -6,6 +6,9 @@ Projectile::Projectile(sf::Texture const& texture, std::vector<sf::Sprite>& wall
 {
 	
 	initSprites();
+	m_fireTime = sf::milliseconds(1000);
+	m_rateOfFire.reset(m_fireTime);
+	m_rateOfFire.start();
 }
 
 void Projectile::update(double dt)
@@ -43,11 +46,15 @@ bool Projectile::checkCollision()
 
  void Projectile::handleKeyInput(sf::Vector2f m_position)
 {
-	 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+	 if (m_rateOfFire.isExpired())
 	 {
-		 setPosition(m_position);
-		 position = m_position;
-		 shot = true;
+		 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+		 {
+			 setPosition(m_position);
+			 position = m_position;
+			 shot = true;
+		 }
+		 m_rateOfFire.restart(m_fireTime);
 	 }
 }
 

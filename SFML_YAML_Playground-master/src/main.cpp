@@ -31,6 +31,7 @@
 /// <returns></returns>
 int main(int, char* argv[])
 {
+	srand(time(NULL));
 	Game game;
 	game.run();
 }

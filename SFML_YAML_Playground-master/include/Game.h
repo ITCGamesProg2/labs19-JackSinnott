@@ -87,11 +87,14 @@ protected:
 	/// </summary>
 	void generateEnemies();
 
+
+	void enemyUpdatedPosition();
+
 	/// <summary>
 	/// @brief A random number between 1 and 4 to control which corner of window to start in.
 	/// </summary>
 	/// <returns></returns>
-	int randomTankSpawn();
+	void randomTankSpawn();
 
 
 private:
@@ -139,5 +142,7 @@ private:
 
 	// Bool to control if we have been assigned an initial position in window
 	bool positionEstablished = false;
+
+	
 	
 };
