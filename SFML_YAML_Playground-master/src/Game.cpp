@@ -255,10 +255,15 @@ void Game::update(double dt)
 		randomTankSpawn();
 		positionEstablished = true;
 	}
-	if (m_stopWatch.getElapsedTime().asMilliseconds() > 1000)
+	if (m_stopWatch.getElapsedTime().asMilliseconds() > 5000)
 	{
 		m_nextTarget = (m_nextTarget + 1) % m_enemySprites.size();
+		
 		m_stopWatch.restart();
+	}
+	if (m_stopWatch.getElapsedTime().asMilliseconds() > 3000)
+	{
+		enemySprite.setColor(sf::Color(255, 255, 255, 0)); 
 	}
 	enemyUpdatedPosition();
 }
