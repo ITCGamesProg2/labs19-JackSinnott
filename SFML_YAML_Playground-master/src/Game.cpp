@@ -29,8 +29,10 @@ Game::Game()
 	// Timer initalisations 
 	// --------------------------------------------------------------------------------------------------------------------
 	m_gameOverTimer = sf::seconds(60.f);
+	m_enemySpawnTime = sf::milliseconds(8000);
 	m_stopWatch.start();
 	m_time.reset(m_gameOverTimer);
+	m_enemySpawn.reset(m_enemySpawnTime);
 	// --------------------------------------------------------------------------------------------------------------------
 	// Loading from files
 	// --------------------------------------------------------------------------------------------------------------------
@@ -234,57 +236,53 @@ void Game::randomTankSpawn()
 
 void Game::EnemyTimeOut()
 {
-	if (m_stopWatch.getElapsedTime().asMilliseconds() > 8000 && m_stopWatch.getElapsedTime().asMilliseconds() < 8150)
+	if (m_stopWatch.getElapsedTime().asMilliseconds() > 6000 && m_stopWatch.getElapsedTime().asMilliseconds() < 6150)
 	{
 		enemyNearlyTimedOut = true;
 	}
-	if (m_stopWatch.getElapsedTime().asMilliseconds() > 8200 && m_stopWatch.getElapsedTime().asMilliseconds() < 8350)
+	if (m_stopWatch.getElapsedTime().asMilliseconds() > 6200 && m_stopWatch.getElapsedTime().asMilliseconds() < 6350)
 	{
 		enemyNearlyTimedOut = false;
 	}
-	if (m_stopWatch.getElapsedTime().asMilliseconds() > 8400 && m_stopWatch.getElapsedTime().asMilliseconds() < 8550)
+	if (m_stopWatch.getElapsedTime().asMilliseconds() > 6400 && m_stopWatch.getElapsedTime().asMilliseconds() < 6550)
 	{
 		enemyNearlyTimedOut = true;
 	}
-	if (m_stopWatch.getElapsedTime().asMilliseconds() > 8600 && m_stopWatch.getElapsedTime().asMilliseconds() < 8750)
+	if (m_stopWatch.getElapsedTime().asMilliseconds() > 6600 && m_stopWatch.getElapsedTime().asMilliseconds() < 6750)
 	{
 		enemyNearlyTimedOut = false;
 	}
-	if (m_stopWatch.getElapsedTime().asMilliseconds() > 8800 && m_stopWatch.getElapsedTime().asMilliseconds() < 8950)
+	if (m_stopWatch.getElapsedTime().asMilliseconds() > 6800 && m_stopWatch.getElapsedTime().asMilliseconds() < 6950)
 	{
 		enemyNearlyTimedOut = true;
 	}
-	if (m_stopWatch.getElapsedTime().asMilliseconds() > 9000 && m_stopWatch.getElapsedTime().asMilliseconds() < 9150)
+	if (m_stopWatch.getElapsedTime().asMilliseconds() > 7000 && m_stopWatch.getElapsedTime().asMilliseconds() < 7150)
 	{
 		enemyNearlyTimedOut = false;
 	}
-	if (m_stopWatch.getElapsedTime().asMilliseconds() > 9200 && m_stopWatch.getElapsedTime().asMilliseconds() < 9350)
+	if (m_stopWatch.getElapsedTime().asMilliseconds() > 7200 && m_stopWatch.getElapsedTime().asMilliseconds() < 7350)
 	{
 		enemyNearlyTimedOut = true;
 	}
-	if (m_stopWatch.getElapsedTime().asMilliseconds() > 9400 && m_stopWatch.getElapsedTime().asMilliseconds() < 9550)
+	if (m_stopWatch.getElapsedTime().asMilliseconds() > 7400 && m_stopWatch.getElapsedTime().asMilliseconds() < 7550)
 	{
 		enemyNearlyTimedOut = false;
 	}
-	if (m_stopWatch.getElapsedTime().asMilliseconds() > 9600 && m_stopWatch.getElapsedTime().asMilliseconds() < 9750)
+	if (m_stopWatch.getElapsedTime().asMilliseconds() > 7600 && m_stopWatch.getElapsedTime().asMilliseconds() < 7750)
 	{
 		enemyNearlyTimedOut = true;
 	}
-	if (m_stopWatch.getElapsedTime().asMilliseconds() > 9800 && m_stopWatch.getElapsedTime().asMilliseconds() < 9950)
+	if (m_stopWatch.getElapsedTime().asMilliseconds() > 7800 && m_stopWatch.getElapsedTime().asMilliseconds() < 7950)
 	{
 		enemyNearlyTimedOut = false;
 	}
 	if (enemyNearlyTimedOut)
 	{
-		
 		m_enemySprites.at(m_nextTarget).setColor(sf::Color(255, 255, 255, 0));
-		
 	}
 	else if (!enemyNearlyTimedOut)
 	{
-		
 		m_enemySprites.at(m_nextTarget).setColor(sf::Color(255, 255, 255, 255));
-		
 	}
 }
 
@@ -313,7 +311,29 @@ void Game::bulletCollisions()
 		m_stopWatch.restart();
 		m_nextTarget++;
 		score += 25;
+		accuracy++;
 	}
+	
+}
+
+void Game::scoreboard()
+{
+	std::ofstream file;
+	file.open("./resources/scoreboard/Scoreboard.txt");
+	char playerName;
+
+	
+	getPlayerName.setString("Please enter your name: ");
+	std::cin >> (playerName);
+	if (file.is_open())
+	{
+		file << "Score " + std::to_string(score) + " \n";
+		file.close();
+	}
+	else
+	{
+		std::cout << "oh no" << std::endl;
+ }
 	
 }
 
@@ -325,11 +345,12 @@ void Game::update(double dt)
 	m_bullets.update(dt);
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 	{
+		shotsFired++;
 		m_bullets.handleKeyInput(m_tank.getPosition());
 	}
 	m_bullets.fired(m_tank.m_turretRotation);
 	scoreOutput();
-	if (m_stopWatch.getElapsedTime().asMilliseconds() > 8000)
+	if (m_stopWatch.getElapsedTime().asMilliseconds() > 6000)
 	{
 		EnemyTimeOut();
 	}
@@ -340,7 +361,7 @@ void Game::update(double dt)
 	bulletCollisions();
 	
 
-	if (m_stopWatch.getElapsedTime().asMilliseconds() > 10000)
+	if (m_stopWatch.getElapsedTime().asMilliseconds() > 8000)
 	{
 		if (m_nextTarget == m_enemySprites.size())
 		{
@@ -349,9 +370,13 @@ void Game::update(double dt)
 		m_nextTarget = (m_nextTarget + 1) % m_enemySprites.size();
 		switchEnemy = true;
 		m_stopWatch.restart();
-		
 	}
 
+	if (m_time.isExpired() || sf::Keyboard::isKeyPressed(sf::Keyboard::T))
+	{
+		gameOver = true;
+		scoreboard();
+	}
 	
 }
 
@@ -359,16 +384,23 @@ void Game::update(double dt)
 void Game::render()
 {
 	m_window.clear(sf::Color(0, 0, 0, 0));
-	m_window.draw(m_bgSprite);
-	m_tank.render(m_window);
-	m_bullets.render(m_window);
-	m_window.draw(HUD_Text);
-
-	for (sf::Sprite& wall : m_wallSprites)
-	{
-		m_window.draw(wall);
-	}
 	
-	m_window.draw(m_enemySprites.at(m_nextTarget));
+		m_window.draw(m_bgSprite);
+		m_tank.render(m_window);
+		m_bullets.render(m_window);
+		m_window.draw(HUD_Text);
+
+		for (sf::Sprite& wall : m_wallSprites)
+		{
+			m_window.draw(wall);
+		}
+
+		m_window.draw(m_enemySprites.at(m_nextTarget));
+	
+	if(gameOver)
+	{
+		m_window.clear(sf::Color(255, 255, 255));
+		m_window.draw(getPlayerName);
+	}
 	m_window.display();
 }

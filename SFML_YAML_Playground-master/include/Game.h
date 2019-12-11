@@ -9,6 +9,8 @@
 #include "Projectile.h"
 #include <ctime>
 #include <stdlib.h>
+#include <iostream>
+#include <fstream>
 
 
 
@@ -113,6 +115,11 @@ protected:
 	/// </summary>
 	void bulletCollisions();
 
+	/// <summary>
+	/// @brief Gives back a player scoreboard atend of game
+	/// </summary>
+	void scoreboard();
+
 private:
 	// main window
 	sf::RenderWindow m_window;
@@ -144,6 +151,8 @@ private:
 	// Hud clock
 	// --------------------------------
 	sf::Time m_gameOverTimer;
+	sf::Time m_enemySpawnTime;
+	thor::Timer m_enemySpawn;
 	thor::Timer m_time;
 	// --------------------------------
 	// Enemy draw clock
@@ -152,6 +161,7 @@ private:
 	// Set up string for displaying HUD
 	sf::Text HUD_Text;
 	sf::Text scoreText;
+	sf::Text finalScoreText;
 	sf::Font all_Purpose_Font;
 	
 	// Enemy vector index
@@ -160,9 +170,20 @@ private:
 	// Player's score count
 	int score = 0;
 
+	// Players accuracy in the game
+	int accuracy = 0;
+
+	int shotsFired = 0;
+
 	// Controls sprites near end of there lifetime
 	bool enemyNearlyTimedOut = false;
 
+	// Needed a bool to stop enemyUpdatedPosition() being called every loop as it caused game to lag horribly
 	bool switchEnemy = true;
+
+	// Changes screen to display your final score
+	bool gameOver = false;
+
+	sf::Text getPlayerName;
 	
 };
