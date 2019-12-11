@@ -231,10 +231,68 @@ void Game::randomTankSpawn()
 	}
 }
 
+void Game::EnemyTimeOut()
+{
+	if (m_stopWatch.getElapsedTime().asMilliseconds() > 8000)
+	{
+		enemyNearlyTimedOut = true;
+	}
+	if (m_stopWatch.getElapsedTime().asMilliseconds() > 8200)
+	{
+		enemyNearlyTimedOut = false;
+	}
+	if (m_stopWatch.getElapsedTime().asMilliseconds() > 8400)
+	{
+		enemyNearlyTimedOut = true;
+	}
+	if (m_stopWatch.getElapsedTime().asMilliseconds() > 8600)
+	{
+		enemyNearlyTimedOut = false;
+	}
+	if (m_stopWatch.getElapsedTime().asMilliseconds() > 8800)
+	{
+		enemyNearlyTimedOut = true;
+	}
+	if (m_stopWatch.getElapsedTime().asMilliseconds() > 9000)
+	{
+		enemyNearlyTimedOut = false;
+	}
+	if (m_stopWatch.getElapsedTime().asMilliseconds() > 9200)
+	{
+		enemyNearlyTimedOut = true;
+	}
+	if (m_stopWatch.getElapsedTime().asMilliseconds() > 9400)
+	{
+		enemyNearlyTimedOut = false;
+	}
+	if (m_stopWatch.getElapsedTime().asMilliseconds() > 9600)
+	{
+		enemyNearlyTimedOut = true;
+	}
+	if (m_stopWatch.getElapsedTime().asMilliseconds() > 9800)
+	{
+		enemyNearlyTimedOut = false;
+	}
+	if (enemyNearlyTimedOut)
+	{
+		for (sf::Sprite& enemy : m_enemySprites)
+		{
+			enemy.setColor(sf::Color(255, 255, 255, 0));
+		}
+	}
+	else if (!enemyNearlyTimedOut)
+	{
+		for (sf::Sprite& enemy : m_enemySprites)
+		{
+			enemy.setColor(sf::Color(255, 255, 255, 255));
+		}
+	}
+}
+
 void Game::scoreOutput()
 {
 	
-	m_window.close();
+	
 }
 
 ////////////////////////////////////////////////////////////
@@ -255,16 +313,14 @@ void Game::update(double dt)
 		randomTankSpawn();
 		positionEstablished = true;
 	}
-	if (m_stopWatch.getElapsedTime().asMilliseconds() > 5000)
+	if (m_stopWatch.getElapsedTime().asMilliseconds() > 10000)
 	{
 		m_nextTarget = (m_nextTarget + 1) % m_enemySprites.size();
 		
 		m_stopWatch.restart();
 	}
-	if (m_stopWatch.getElapsedTime().asMilliseconds() > 3000)
-	{
-		enemySprite.setColor(sf::Color(255, 255, 255, 0)); 
-	}
+	EnemyTimeOut();
+	
 	enemyUpdatedPosition();
 }
 

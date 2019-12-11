@@ -96,6 +96,12 @@ protected:
 	/// <returns></returns>
 	void randomTankSpawn();
 
+	/// <summary>
+	/// @brief Function to have enemy flash when timealmost up
+	/// </summary>
+	void EnemyTimeOut();
+
+
 	void scoreOutput();
 
 private:
@@ -141,6 +147,8 @@ private:
 	
 	// Enemy vector index
 	int m_nextTarget{ 0 };
+
+	bool enemyNearlyTimedOut = false;
 
 	// Bool to control if we have been assigned an initial position in window
 	bool positionEstablished = false;

@@ -86,7 +86,7 @@ obstacles:
      rotation: 0
 enemies:
    - type: enemy
-     position: {x: 50, y: 100, offset: 20}
+     position: {x: 500, y: 100, offset: 20}
    - type: enemy
      position: {x: 90, y: 250, offset: 20}
    - type: enemy

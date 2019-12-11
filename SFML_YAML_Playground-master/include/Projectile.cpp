@@ -53,8 +53,8 @@ bool Projectile::checkCollision()
 			 setPosition(m_position);
 			 position = m_position;
 			 shot = true;
+			 m_rateOfFire.restart(m_fireTime);
 		 }
-		 m_rateOfFire.restart(m_fireTime);
 	 }
 }
 
