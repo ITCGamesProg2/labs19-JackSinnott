@@ -1,8 +1,9 @@
 #include "Projectile.h"
 
-Projectile::Projectile(sf::Texture const& texture, std::vector<sf::Sprite>& wallSprites)
+Projectile::Projectile(sf::Texture const& texture, std::vector<sf::Sprite>& wallSprites, std::vector<sf::Sprite>& enemySprite)
 	: m_texture(texture),
-	m_wallSprites(wallSprites)
+	m_wallSprites(wallSprites),
+	m_enemySprites(enemySprite)
 {
 	
 	initSprites();
@@ -13,11 +14,10 @@ Projectile::Projectile(sf::Texture const& texture, std::vector<sf::Sprite>& wall
 
 void Projectile::update(double dt)
 {
-	checkCollision();
    	position.x += velocity.x * (dt / 1000);
 	position.y += velocity.y * (dt / 1000);
 	m_bullet.setPosition(position);
-	
+	boundaryCheck();
 }
 
 void Projectile::render(sf::RenderWindow &m_win)
@@ -31,12 +31,51 @@ void Projectile::setPosition(sf::Vector2f m_position)
 	
 }
 
-bool Projectile::checkCollision()
+void Projectile::setVelocity(sf::Vector2f m_velocity)
+{
+	velocity.x = m_velocity.x;
+	velocity.y = m_velocity.y;
+}
+
+void Projectile::boundaryCheck()
+{
+	if (position.x < 0 || position.x > ScreenSize::s_height)
+	{
+		position = { -100,-100 };
+		velocity = { 0,0 };
+	}
+	if (position.y < 0 || position.y > ScreenSize::s_width)
+	{
+		position = { -100,-100 };
+		velocity = { 0,0 };
+	}
+
+}
+
+bool Projectile::hasfired()
+{
+	return bulletInOrbit;
+}
+
+bool Projectile::checkWallCollision()
 {
 	for (sf::Sprite const& sprite : m_wallSprites)
 	{
 		// Checks if the bullet collided with the wall.
 		if (CollisionDetector::collision(m_bullet, sprite))
+		{
+			return true;
+		}
+	}
+	
+	return false;
+}
+
+bool Projectile::checkEnemyCollision()
+{
+	for (sf::Sprite const& enemy : m_enemySprites)
+	{
+		if (CollisionDetector::collision(m_bullet, enemy))
 		{
 			return true;
 		}
@@ -48,13 +87,13 @@ bool Projectile::checkCollision()
 {
 	 if (m_rateOfFire.isExpired())
 	 {
-		 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
-		 {
-			 setPosition(m_position);
-			 position = m_position;
-			 shot = true;
-			 m_rateOfFire.restart(m_fireTime);
-		 }
+
+		 setPosition(m_position);
+		 position = m_position;
+		 shot = true;
+		 m_rateOfFire.restart(m_fireTime);
+		 bulletInOrbit = true;
+
 	 }
 }
 

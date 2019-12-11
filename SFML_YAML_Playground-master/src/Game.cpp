@@ -8,7 +8,7 @@ static double const MS_PER_UPDATE = 10.0;
 Game::Game()
 	: m_window(sf::VideoMode(ScreenSize::s_height, ScreenSize::s_width, 32), "SFML Playground", sf::Style::Default)
 	, m_tank(m_texture, m_wallSprites, m_enemySprites),
-	m_bullets(m_texture, m_wallSprites)
+	m_bullets(m_texture, m_wallSprites, m_enemySprites)
 {
 	m_window.setVerticalSyncEnabled(true);
 	// --------------------------------------------------------------------------------------------------------------------
@@ -34,7 +34,7 @@ Game::Game()
 	// --------------------------------------------------------------------------------------------------------------------
 	// Loading from files
 	// --------------------------------------------------------------------------------------------------------------------
-	if (!all_Purpose_Font.loadFromFile("c:/windows/fonts/MTCORSVA.TTF"))
+	if (!all_Purpose_Font.loadFromFile("./resources/fonts/calibri.ttf"))
 	{
 		std::cout << "problem loading font file" << std::endl;
 	}
@@ -69,6 +69,7 @@ Game::Game()
 	// --------------------------------------------------------------------------------------------------------------------
 	generateWalls();
 	generateEnemies();
+	randomTankSpawn();
 	// --------------------------------------------------------------------------------------------------------------------
 	
 }
@@ -194,7 +195,7 @@ void Game::enemyUpdatedPosition()
 		enemySprite.setPosition(enemySprite.getPosition().x + (m_level.m_enemies.at(0).m_offset.x * sign),
 			enemySprite.getPosition().y + (m_level.m_enemies.at(0).m_offset.y * sign));
 	}
-	
+	switchEnemy = false;
 }
 
 	/// <summary>
@@ -233,65 +234,86 @@ void Game::randomTankSpawn()
 
 void Game::EnemyTimeOut()
 {
-	if (m_stopWatch.getElapsedTime().asMilliseconds() > 8000)
+	if (m_stopWatch.getElapsedTime().asMilliseconds() > 8000 && m_stopWatch.getElapsedTime().asMilliseconds() < 8150)
 	{
 		enemyNearlyTimedOut = true;
 	}
-	if (m_stopWatch.getElapsedTime().asMilliseconds() > 8200)
+	if (m_stopWatch.getElapsedTime().asMilliseconds() > 8200 && m_stopWatch.getElapsedTime().asMilliseconds() < 8350)
 	{
 		enemyNearlyTimedOut = false;
 	}
-	if (m_stopWatch.getElapsedTime().asMilliseconds() > 8400)
+	if (m_stopWatch.getElapsedTime().asMilliseconds() > 8400 && m_stopWatch.getElapsedTime().asMilliseconds() < 8550)
 	{
 		enemyNearlyTimedOut = true;
 	}
-	if (m_stopWatch.getElapsedTime().asMilliseconds() > 8600)
+	if (m_stopWatch.getElapsedTime().asMilliseconds() > 8600 && m_stopWatch.getElapsedTime().asMilliseconds() < 8750)
 	{
 		enemyNearlyTimedOut = false;
 	}
-	if (m_stopWatch.getElapsedTime().asMilliseconds() > 8800)
+	if (m_stopWatch.getElapsedTime().asMilliseconds() > 8800 && m_stopWatch.getElapsedTime().asMilliseconds() < 8950)
 	{
 		enemyNearlyTimedOut = true;
 	}
-	if (m_stopWatch.getElapsedTime().asMilliseconds() > 9000)
+	if (m_stopWatch.getElapsedTime().asMilliseconds() > 9000 && m_stopWatch.getElapsedTime().asMilliseconds() < 9150)
 	{
 		enemyNearlyTimedOut = false;
 	}
-	if (m_stopWatch.getElapsedTime().asMilliseconds() > 9200)
+	if (m_stopWatch.getElapsedTime().asMilliseconds() > 9200 && m_stopWatch.getElapsedTime().asMilliseconds() < 9350)
 	{
 		enemyNearlyTimedOut = true;
 	}
-	if (m_stopWatch.getElapsedTime().asMilliseconds() > 9400)
+	if (m_stopWatch.getElapsedTime().asMilliseconds() > 9400 && m_stopWatch.getElapsedTime().asMilliseconds() < 9550)
 	{
 		enemyNearlyTimedOut = false;
 	}
-	if (m_stopWatch.getElapsedTime().asMilliseconds() > 9600)
+	if (m_stopWatch.getElapsedTime().asMilliseconds() > 9600 && m_stopWatch.getElapsedTime().asMilliseconds() < 9750)
 	{
 		enemyNearlyTimedOut = true;
 	}
-	if (m_stopWatch.getElapsedTime().asMilliseconds() > 9800)
+	if (m_stopWatch.getElapsedTime().asMilliseconds() > 9800 && m_stopWatch.getElapsedTime().asMilliseconds() < 9950)
 	{
 		enemyNearlyTimedOut = false;
 	}
 	if (enemyNearlyTimedOut)
 	{
-		for (sf::Sprite& enemy : m_enemySprites)
-		{
-			enemy.setColor(sf::Color(255, 255, 255, 0));
-		}
+		
+		m_enemySprites.at(m_nextTarget).setColor(sf::Color(255, 255, 255, 0));
+		
 	}
 	else if (!enemyNearlyTimedOut)
 	{
-		for (sf::Sprite& enemy : m_enemySprites)
-		{
-			enemy.setColor(sf::Color(255, 255, 255, 255));
-		}
+		
+		m_enemySprites.at(m_nextTarget).setColor(sf::Color(255, 255, 255, 255));
+		
 	}
 }
 
 void Game::scoreOutput()
 {
+	HUD_Text.setString("Time remaining :" + std::to_string(static_cast<int>(m_time.getRemainingTime().asSeconds())) + "\t\t Score: " + std::to_string(score));
+	if (m_time.isExpired())
+	{
+		scoreOutput();
+	}
 	
+}
+
+void Game::bulletCollisions()
+{
+	if (m_bullets.checkWallCollision())
+	{
+		m_bullets.setPosition(sf::Vector2f{ -100, -100 });
+		m_bullets.setVelocity(sf::Vector2f{ 0,0 });
+	}
+
+	if (m_bullets.checkEnemyCollision())
+	{
+		m_bullets.setPosition(sf::Vector2f{ -100, -100 });
+		m_bullets.setVelocity(sf::Vector2f{ 0,0 });
+		m_stopWatch.restart();
+		m_nextTarget++;
+		score += 25;
+	}
 	
 }
 
@@ -299,29 +321,38 @@ void Game::scoreOutput()
 void Game::update(double dt)
 {
 	m_time.start();
-	HUD_Text.setString("Time remaining :" + std::to_string(static_cast<int>(m_time.getRemainingTime().asSeconds())));
-	if (m_time.isExpired())
-	{
-		scoreOutput();
-	}
 	m_tank.update(dt);
 	m_bullets.update(dt);
-	m_bullets.handleKeyInput(m_tank.getPosition());
-	m_bullets.fired(m_tank.m_turretRotation);
-	if (!positionEstablished)
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 	{
-		randomTankSpawn();
-		positionEstablished = true;
+		m_bullets.handleKeyInput(m_tank.getPosition());
 	}
+	m_bullets.fired(m_tank.m_turretRotation);
+	scoreOutput();
+	if (m_stopWatch.getElapsedTime().asMilliseconds() > 8000)
+	{
+		EnemyTimeOut();
+	}
+	if (switchEnemy)
+	{
+		enemyUpdatedPosition();
+	}
+	bulletCollisions();
+	
+
 	if (m_stopWatch.getElapsedTime().asMilliseconds() > 10000)
 	{
+		if (m_nextTarget == m_enemySprites.size())
+		{
+			m_nextTarget = 0;
+		}
 		m_nextTarget = (m_nextTarget + 1) % m_enemySprites.size();
-		
+		switchEnemy = true;
 		m_stopWatch.restart();
+		
 	}
-	EnemyTimeOut();
+
 	
-	enemyUpdatedPosition();
 }
 
 ////////////////////////////////////////////////////////////

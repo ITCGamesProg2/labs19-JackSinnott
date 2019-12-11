@@ -87,7 +87,9 @@ protected:
 	/// </summary>
 	void generateEnemies();
 
-
+	/// <summary>
+	/// ~brief sets position in window for enemies and also moves them upon respawn
+	/// </summary>
 	void enemyUpdatedPosition();
 
 	/// <summary>
@@ -101,8 +103,15 @@ protected:
 	/// </summary>
 	void EnemyTimeOut();
 
-
+	/// <summary>
+	/// @brief Controls any sf::text for the hud in game
+	/// </summary>
 	void scoreOutput();
+
+	/// <summary>
+	/// @brief Checks for collision between either walls or enemies
+	/// </summary>
+	void bulletCollisions();
 
 private:
 	// main window
@@ -148,11 +157,12 @@ private:
 	// Enemy vector index
 	int m_nextTarget{ 0 };
 
+	// Player's score count
+	int score = 0;
+
+	// Controls sprites near end of there lifetime
 	bool enemyNearlyTimedOut = false;
 
-	// Bool to control if we have been assigned an initial position in window
-	bool positionEstablished = false;
-
-	
+	bool switchEnemy = true;
 	
 };

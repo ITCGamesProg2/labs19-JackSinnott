@@ -10,7 +10,7 @@
 class Projectile
 {
 public:
-	Projectile(sf::Texture const& texture, std::vector<sf::Sprite>& wallSprites);
+	Projectile(sf::Texture const& texture, std::vector<sf::Sprite>& wallSprites, std::vector<sf::Sprite>& enemySprite);
 
 	void update(double dt);
 	void render(sf::RenderWindow &m_win);
@@ -21,13 +21,26 @@ public:
 	/// <param name="m_position"></param>
 	void setPosition(sf::Vector2f m_position);
 
+	/// <summary>
+	/// @brief Used to reset velocity ti zero if bullet hits target
+	/// </summary>
+	void setVelocity(sf::Vector2f m_velocity);
+
+	void boundaryCheck();
+	bool hasfired();
 
 	/// <summary>
 	/// @brief Checks for collisions between the bullet and the walls.
 	/// 
 	/// </summary>
 	/// <returns>True if collision detected between bullet and wall.</returns>
-	bool checkCollision();
+	bool checkWallCollision();
+
+	/// <summary>
+	/// ~brief Checks for collision between the bullet and enemies
+	/// </summary>
+	/// <returns>True if collision detected between the bullets and enemies</returns>
+	bool checkEnemyCollision();
 
 	/// <summary>
 	/// @brief Gets the key input to know firing is true
@@ -67,7 +80,10 @@ private:
 
 	// data variables for collision detection
 	std::vector<sf::Sprite>& m_wallSprites;
+	std::vector<sf::Sprite>& m_enemySprites;
 
 	// Bool to check if bullet has been shot
 	bool shot = false;
+
+	bool bulletInOrbit = false;
 };
