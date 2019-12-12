@@ -1,6 +1,9 @@
 #include "Game.h"
 #include <iostream>
 
+/// <summary>
+/// Known bugs: The bullets will sometimes hit enemies even when they are not on screen and the application will bomb out.. This doesn't always happen though
+/// </summary>
 // Updates per milliseconds
 static double const MS_PER_UPDATE = 10.0;
 
@@ -44,6 +47,10 @@ Game::Game()
 	{
 		std::cout << "Error loading background image" << std::endl;
 	}
+	if (!m_targetTexture.loadFromFile("./resources/images/target.png"))
+	{
+		std::cout << "Error loading target texture" << std::endl;
+	}
 	if (!m_texture.loadFromFile("./resources/images/SpriteSheet.png"))
 	{
 		std::string s("Error loading texture");
@@ -62,7 +69,9 @@ Game::Game()
 	sf::Vector2f HUD_Center = sf::Vector2f(HUD_Text.getLocalBounds().width / 2.0f, HUD_Text.getLocalBounds().height / 2.0f);
 	HUD_Text.setOrigin(HUD_Center);
 	HUD_Text.setPosition(m_window.getSize().x * 0.4f, 20.f);
+	scoreText.setPosition(50, 100);
 	HUD_Text.setFillColor(sf::Color::Black);
+	scoreText.setFillColor(sf::Color::Black);
 
 	sf::Vector2f score_Center = sf::Vector2f(scoreText.getLocalBounds().width / 2.0f, scoreText.getLocalBounds().height / 2.0f);
 	scoreText.setOrigin(score_Center);
@@ -165,15 +174,14 @@ void Game::generateWalls()
 ////////////////////////////////////////////////////////////
 void Game::generateEnemies()
 {
-	sf::IntRect enemyRect(107, 42, 77, 43);
-	sf::IntRect enemyTurretRect(19, 1, 83, 31);
+	//sf::IntRect enemyRect(107, 42, 77, 43);
 	// Create the enemies
 	for (EnemyData const& enemy : m_level.m_enemies)
 	{
-		enemySprite.setTexture(m_texture);
-		enemySprite.setTextureRect(enemyRect);
-		enemySprite.setScale(.75, .75);
-		enemySprite.setOrigin(enemyRect.width / 2.0, enemyRect.height / 2.0);
+		enemySprite.setTexture(m_targetTexture);
+		//enemySprite.setTextureRect(enemyRect);
+		enemySprite.setScale(.05, .05);
+		
 	}
 }
 
@@ -289,14 +297,15 @@ void Game::EnemyTimeOut()
 void Game::scoreOutput()
 {
 	HUD_Text.setString("Time remaining :" + std::to_string(static_cast<int>(m_time.getRemainingTime().asSeconds())) + "\t\t Score: " + std::to_string(score));
-	if (m_time.isExpired())
+	int percentageAccuracy = static_cast<int>(((static_cast<double>(m_bullets.shotFired()) / static_cast<double>(m_bullets.accuracyRate()) * 100)));
+	scoreText.setString("Enemies hit: " + std::to_string(m_bullets.shotFired()) + "\nAccuracy: " + std::to_string(percentageAccuracy));
+	if (m_bullets.shotFired() == 2)
 	{
-		scoreOutput();
+
 	}
-	
 }
 
-void Game::bulletCollisions()
+void Game::bulletCollisions(int t_index, int t_totalShotsFired)
 {
 	if (m_bullets.checkWallCollision())
 	{
@@ -304,38 +313,21 @@ void Game::bulletCollisions()
 		m_bullets.setVelocity(sf::Vector2f{ 0,0 });
 	}
 
-	if (m_bullets.checkEnemyCollision())
+	if (m_bullets.checkEnemyCollision(t_index))
 	{
 		m_bullets.setPosition(sf::Vector2f{ -100, -100 });
 		m_bullets.setVelocity(sf::Vector2f{ 0,0 });
 		m_stopWatch.restart();
-		m_nextTarget++;
+		if (m_nextTarget == m_enemySprites.size())
+		{
+			m_nextTarget = 0;
+		}
+		m_nextTarget = (m_nextTarget + 1) % m_enemySprites.size();
 		score += 25;
-		accuracy++;
 	}
 	
 }
 
-void Game::scoreboard()
-{
-	std::ofstream file;
-	file.open("./resources/scoreboard/Scoreboard.txt");
-	char playerName;
-
-	
-	getPlayerName.setString("Please enter your name: ");
-	std::cin >> (playerName);
-	if (file.is_open())
-	{
-		file << "Score " + std::to_string(score) + " \n";
-		file.close();
-	}
-	else
-	{
-		std::cout << "oh no" << std::endl;
- }
-	
-}
 
 ////////////////////////////////////////////////////////////
 void Game::update(double dt)
@@ -345,7 +337,6 @@ void Game::update(double dt)
 	m_bullets.update(dt);
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 	{
-		shotsFired++;
 		m_bullets.handleKeyInput(m_tank.getPosition());
 	}
 	m_bullets.fired(m_tank.m_turretRotation);
@@ -358,7 +349,7 @@ void Game::update(double dt)
 	{
 		enemyUpdatedPosition();
 	}
-	bulletCollisions();
+	bulletCollisions(m_nextTarget, m_bullets.shotFired());
 	
 
 	if (m_stopWatch.getElapsedTime().asMilliseconds() > 8000)
@@ -372,10 +363,9 @@ void Game::update(double dt)
 		m_stopWatch.restart();
 	}
 
-	if (m_time.isExpired() || sf::Keyboard::isKeyPressed(sf::Keyboard::T))
+	if (m_time.isExpired())
 	{
-		gameOver = true;
-		scoreboard();
+		m_window.close();
 	}
 	
 }
@@ -384,23 +374,19 @@ void Game::update(double dt)
 void Game::render()
 {
 	m_window.clear(sf::Color(0, 0, 0, 0));
-	
-		m_window.draw(m_bgSprite);
-		m_tank.render(m_window);
-		m_bullets.render(m_window);
-		m_window.draw(HUD_Text);
 
-		for (sf::Sprite& wall : m_wallSprites)
-		{
-			m_window.draw(wall);
-		}
+	m_window.draw(m_bgSprite);
+	m_tank.render(m_window);
+	m_bullets.render(m_window);
+	m_window.draw(HUD_Text);
 
-		m_window.draw(m_enemySprites.at(m_nextTarget));
-	
-	if(gameOver)
+	for (sf::Sprite& wall : m_wallSprites)
 	{
-		m_window.clear(sf::Color(255, 255, 255));
-		m_window.draw(getPlayerName);
+		m_window.draw(wall);
 	}
+
+	m_window.draw(m_enemySprites.at(m_nextTarget));
+	m_window.draw(scoreText);
+
 	m_window.display();
 }

@@ -40,7 +40,7 @@ public:
 	/// ~brief Checks for collision between the bullet and enemies
 	/// </summary>
 	/// <returns>True if collision detected between the bullets and enemies</returns>
-	bool checkEnemyCollision();
+	bool checkEnemyCollision(int t_index);
 
 	/// <summary>
 	/// @brief Gets the key input to know firing is true
@@ -48,6 +48,8 @@ public:
 	/// <returns> True if space button is pressed </returns>
 	void handleKeyInput(sf::Vector2f m_position);
 
+	int shotFired();
+	int accuracyRate();
 	/// <summary>
 	/// @brief Assigns the rotation and movement to bullet
 	/// </summary>
@@ -85,5 +87,13 @@ private:
 	// Bool to check if bullet has been shot
 	bool shot = false;
 
+	bool shooting = false;
+
+	// Players accuracy in the game
+	int accuracy = 1;
+
 	bool bulletInOrbit = false;
+
+	int shotsFired = 1;
+
 };

@@ -113,12 +113,8 @@ protected:
 	/// <summary>
 	/// @brief Checks for collision between either walls or enemies
 	/// </summary>
-	void bulletCollisions();
+	void bulletCollisions(int t_index, int t_totalShotsFired);
 
-	/// <summary>
-	/// @brief Gives back a player scoreboard atend of game
-	/// </summary>
-	void scoreboard();
 
 private:
 	// main window
@@ -130,6 +126,8 @@ private:
 
 	// A texture for the sprite sheet
 	sf::Texture m_texture;
+
+	sf::Texture m_targetTexture;
 
 	// An instance representing the player controlled tank.
 	Tank m_tank;
@@ -161,7 +159,6 @@ private:
 	// Set up string for displaying HUD
 	sf::Text HUD_Text;
 	sf::Text scoreText;
-	sf::Text finalScoreText;
 	sf::Font all_Purpose_Font;
 	
 	// Enemy vector index
@@ -170,10 +167,9 @@ private:
 	// Player's score count
 	int score = 0;
 
-	// Players accuracy in the game
-	int accuracy = 0;
+	
 
-	int shotsFired = 0;
+	
 
 	// Controls sprites near end of there lifetime
 	bool enemyNearlyTimedOut = false;
@@ -185,5 +181,6 @@ private:
 	bool gameOver = false;
 
 	sf::Text getPlayerName;
-	
+
+
 };

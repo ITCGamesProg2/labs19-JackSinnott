@@ -71,15 +71,15 @@ bool Projectile::checkWallCollision()
 	return false;
 }
 
-bool Projectile::checkEnemyCollision()
+bool Projectile::checkEnemyCollision(int t_index)
 {
-	for (sf::Sprite const& enemy : m_enemySprites)
+	
+	if (CollisionDetector::collision(m_bullet, m_enemySprites[t_index]))
 	{
-		if (CollisionDetector::collision(m_bullet, enemy))
-		{
-			return true;
-		}
+		shotsFired++;
+		return true;
 	}
+	
 	return false;
 }
 
@@ -97,6 +97,16 @@ bool Projectile::checkEnemyCollision()
 	 }
 }
 
+ int Projectile::shotFired()
+ {
+	 return shotsFired;
+ }
+
+ int Projectile::accuracyRate()
+ {
+	 return accuracy;
+ }
+
 void Projectile::fired(double t_rotation)
 {
 	if (shot == true)
@@ -107,6 +117,11 @@ void Projectile::fired(double t_rotation)
 		{
 			velocity.x = cos(t_rotation * MathUtility::DEG_TO_RAD) * m_speed;
 			velocity.y = sin(t_rotation * MathUtility::DEG_TO_RAD) * m_speed;
+			shooting = true;
+			if (shooting)
+			{
+				accuracy++;
+			}
 		}
 		shot = false;
 	}
