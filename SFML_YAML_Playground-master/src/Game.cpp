@@ -10,8 +10,8 @@ static double const MS_PER_UPDATE = 10.0;
 ////////////////////////////////////////////////////////////
 Game::Game()
 	: m_window(sf::VideoMode(ScreenSize::s_height, ScreenSize::s_width, 32), "SFML Playground", sf::Style::Default)
-	, m_tank(m_texture, m_wallSprites, m_enemySprites),
-	m_bullets(m_texture, m_wallSprites, m_enemySprites)
+	, m_tank(m_texture, m_wallSprites, m_enemySprites)
+	
 {
 	m_window.setVerticalSyncEnabled(true);
 	// --------------------------------------------------------------------------------------------------------------------
@@ -296,37 +296,11 @@ void Game::EnemyTimeOut()
 
 void Game::scoreOutput()
 {
-	HUD_Text.setString("Time remaining :" + std::to_string(static_cast<int>(m_time.getRemainingTime().asSeconds())) + "\t\t Score: " + std::to_string(score));
-	int percentageAccuracy = static_cast<int>(((static_cast<double>(m_bullets.shotFired()) / static_cast<double>(m_bullets.accuracyRate()) * 100)));
-	scoreText.setString("Enemies hit: " + std::to_string(m_bullets.shotFired()) + "\nAccuracy: " + std::to_string(percentageAccuracy));
-	if (m_bullets.shotFired() == 2)
-	{
-
-	}
-}
-
-void Game::bulletCollisions(int t_index, int t_totalShotsFired)
-{
-	if (m_bullets.checkWallCollision())
-	{
-		m_bullets.setPosition(sf::Vector2f{ -100, -100 });
-		m_bullets.setVelocity(sf::Vector2f{ 0,0 });
-	}
-
-	if (m_bullets.checkEnemyCollision(t_index))
-	{
-		m_bullets.setPosition(sf::Vector2f{ -100, -100 });
-		m_bullets.setVelocity(sf::Vector2f{ 0,0 });
-		m_stopWatch.restart();
-		if (m_nextTarget == m_enemySprites.size())
-		{
-			m_nextTarget = 0;
-		}
-		m_nextTarget = (m_nextTarget + 1) % m_enemySprites.size();
-		score += 25;
-	}
+	
 	
 }
+
+
 
 
 ////////////////////////////////////////////////////////////
@@ -334,12 +308,12 @@ void Game::update(double dt)
 {
 	m_time.start();
 	m_tank.update(dt);
-	m_bullets.update(dt);
+	
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 	{
-		m_bullets.handleKeyInput(m_tank.getPosition());
+		
 	}
-	m_bullets.fired(m_tank.m_turretRotation);
+	
 	scoreOutput();
 	if (m_stopWatch.getElapsedTime().asMilliseconds() > 6000)
 	{
@@ -349,7 +323,7 @@ void Game::update(double dt)
 	{
 		enemyUpdatedPosition();
 	}
-	bulletCollisions(m_nextTarget, m_bullets.shotFired());
+	
 	
 
 	if (m_stopWatch.getElapsedTime().asMilliseconds() > 8000)
@@ -377,13 +351,15 @@ void Game::render()
 
 	m_window.draw(m_bgSprite);
 	m_tank.render(m_window);
-	m_bullets.render(m_window);
+	
+	m_pool.render(m_window);
 	m_window.draw(HUD_Text);
 
 	for (sf::Sprite& wall : m_wallSprites)
 	{
 		m_window.draw(wall);
 	}
+	
 
 	m_window.draw(m_enemySprites.at(m_nextTarget));
 	m_window.draw(scoreText);

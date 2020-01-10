@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include "MathUtility.h"
 #include "CollisionDetector.h"
+#include "ProjectilePool.h"
 
 
 /// <summary>
@@ -100,6 +101,14 @@ public:
 	// The last rotation before update as applied to the turret.
 	double m_previousTurretRotation;
 
+	/// <summary>
+	/// @brief Generates a request to fire a projectile.
+	/// A projectile will be fired from the tip of the turret only if time limit between shots
+	///  has expired. Fire requests are not queued.
+	/// </summary>
+	void requestFire();
+
+
 private:
 	/// <summary>
 	/// @brief assign textures to sprites and assign values to intRect for both turret and tank.
@@ -128,5 +137,14 @@ private:
 	// Bool to check if rotation has been applied
 	bool m_enableRotation = true;
 
+	// Instance of the projectile pool so the tank can shoot bullets
+	ProjectilePool m_pool;
+
+	// The delay time between shots in milliseconds.
+	static int const s_TIME_BETWEEN_SHOTS{ 800 };
+
+	bool m_fireRequested = false;
+
+	int m_shootTimer{ 800 };
 	
 };

@@ -20,26 +20,33 @@ Tank::Tank(sf::Texture const& texture, std::vector<sf::Sprite>& wallSprites, std
 }
 
 void Tank::update(double dt)
-{	
-	handleKeyInput();
+{
+
 	position.x = (m_tankBase.getPosition().x + cos(m_rotation * MathUtility::DEG_TO_RAD) * m_speed * (dt / 1000));
 	position.y = (m_tankBase.getPosition().y + sin(m_rotation * MathUtility::DEG_TO_RAD) * m_speed * (dt / 1000));
-	
+	handleKeyInput();
 	m_tankBase.setPosition(position);
 	m_tankBase.setRotation(m_rotation);
-	
 
 	position.x = (m_tankBase.getPosition().x + cos(m_turretRotation * MathUtility::DEG_TO_RAD) * m_speed * (dt / 1000));
 	position.y = (m_tankBase.getPosition().y + sin(m_turretRotation * MathUtility::DEG_TO_RAD) * m_speed * (dt / 1000));
 
 	m_turret.setPosition(position);
 	m_turret.setRotation(m_turretRotation);
-	
+
 	m_speed *= 0.999;
 
 	if (checkWallCollision())
 	{
 		deflect();
+	}
+
+	m_pool.update(dt, m_wallSprites);
+	m_shootTimer -= dt;
+	if (m_shootTimer <= 0)
+	{
+		m_shootTimer = s_TIME_BETWEEN_SHOTS;
+		m_fireRequested = false;
 	}
 }
 
@@ -47,6 +54,7 @@ void Tank::render(sf::RenderWindow & window)
 {
 	window.draw(m_tankBase);
 	window.draw(m_turret);
+	m_pool.render(window);
 }
 
 void Tank::increaseSpeed()
@@ -225,7 +233,28 @@ void Tank::handleKeyInput()
 		m_turretRotation = m_rotation;
 		m_previousTurretRotation = m_turretRotation;
 	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+	{
+		requestFire();
+	}
 }
+
+
+////////////////////////////////////////////////////////////
+void Tank::requestFire()
+{
+	m_fireRequested = true;
+	if (m_shootTimer == s_TIME_BETWEEN_SHOTS)
+	{
+		
+		sf::Vector2f tipOfTurret(m_turret.getPosition().x + 2.0f, m_turret.getPosition().y);
+		tipOfTurret.x += std::cos(MathUtility::DEG_TO_RAD * m_turret.getRotation()) * ((m_turret.getLocalBounds().top + m_turret.getLocalBounds().height) * 1.7f);
+		tipOfTurret.y += std::sin(MathUtility::DEG_TO_RAD * m_turret.getRotation()) * ((m_turret.getLocalBounds().top + m_turret.getLocalBounds().height) * 1.7f);
+		m_pool.create(m_texture, tipOfTurret.x, tipOfTurret.y, m_turret.getRotation());
+	}
+	
+}
+
 
 
 void Tank::initSprites()

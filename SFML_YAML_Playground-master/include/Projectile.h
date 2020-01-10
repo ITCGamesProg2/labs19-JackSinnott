@@ -1,99 +1,70 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include "ScreenSize.h"
 #include "MathUtility.h"
 #include "CollisionDetector.h"
-#include "Tank.h"
-#include <Thor/Vectors.hpp>
-#include <Thor/Time.hpp>
-#include <ScreenSize.h>
 
+/// <summary>
+/// @brief A basic projectile implementation.
+/// 
+/// Handles initialisation and updating of projectiles.
+/// </summary>
 class Projectile
 {
+	// Allows the ProjectilePool direct access to the private members of Projectile.
+	// This is so the ProjectilePool can access the Projectile sprite representation so it
+	// can be rendered.
+	friend class ProjectilePool;
+
 public:
-	Projectile(sf::Texture const& texture, std::vector<sf::Sprite>& wallSprites, std::vector<sf::Sprite>& enemySprite);
-
-	void update(double dt);
-	void render(sf::RenderWindow &m_win);
+	/// <summary>
+	/// @brief No-op default constructor
+	/// </summary>
+	Projectile() = default;
 
 	/// <summary>
-	/// @brief Sets position of bullets in the window 
+	/// @brief Initialises various properties of the projectile.
+	/// The projectile speed is set to it's maximum allowable speed.
 	/// </summary>
-	/// <param name="m_position"></param>
-	void setPosition(sf::Vector2f m_position);
+	/// <param name="texture">A reference to the sprite sheet texture</param>	
+	/// <param name="x">The x position of the projectile</param>
+	/// <param name="x">The y position of the projectile</param>
+	/// <param name="rotation">The rotation angle of the projectile in degrees</param>
+	void init(sf::Texture const & texture, double x, double y, double rotation);
 
 	/// <summary>
-	/// @brief Used to reset velocity ti zero if bullet hits target
+	/// @brief Calculates the new position of the projectile.
+	/// If this projectile is currently in use (on screen, speed non-zero), it's next screen position
+	///  is calculated along a vector that extends directly from the tip of the tank turret.
+	/// If the newly calculated position is off-screen, then the projectile speed is reset to 0.
+	/// Otherwise (projectile still on-screen), a collision check is performed between the projectile
+	///  and every wall. If the projectile collides with a wall, it's speed is reset to 0.
 	/// </summary>
-	void setVelocity(sf::Vector2f m_velocity);
-
-	void boundaryCheck();
-	bool hasfired();
-
+	/// <param name="dt">The delta time</param>
+	/// <param name="wallSprites">A reference to the container of wall sprites</param>
+	/// <returns>True if this projectile is currently not in use (i.e. speed is zero).</returns>
+	bool update(double dt, std::vector<sf::Sprite> & wallSprites);
+	
 	/// <summary>
-	/// @brief Checks for collisions between the bullet and the walls.
-	/// 
+	/// @brief Simpler helper function to determine if projectile is currently in use.
 	/// </summary>
-	/// <returns>True if collision detected between bullet and wall.</returns>
-	bool checkWallCollision();
-
-	/// <summary>
-	/// ~brief Checks for collision between the bullet and enemies
-	/// </summary>
-	/// <returns>True if collision detected between the bullets and enemies</returns>
-	bool checkEnemyCollision(int t_index);
-
-	/// <summary>
-	/// @brief Gets the key input to know firing is true
-	/// </summary>
-	/// <returns> True if space button is pressed </returns>
-	void handleKeyInput(sf::Vector2f m_position);
-
-	int shotFired();
-	int accuracyRate();
-	/// <summary>
-	/// @brief Assigns the rotation and movement to bullet
-	/// </summary>
-	void fired(double t_rotation);
+	/// <returns>True if this projectile is currently in use (i.e. speed is non zero).</returns>
+	bool inUse() const;
 
 private:
-	/// <summary>
-	/// @brief Assigns the textures to sprites and sets up intRect.
-	/// </summary>
-	void initSprites();
-
-	// Gives the bullet its position in the window
-	sf::Vector2f position;
-
-	// Imposes changes in position
-	sf::Vector2f velocity;
 	
-	// The rotation of the bullet
-	double m_rotation;
+	bool Projectile::isOnScreen(sf::Vector2f position) const;
 
-	// The speed of the bullets
-	double m_speed = 1000;;
+	// Max. update speed 
+	static constexpr double s_MAX_SPEED { 1000.0 };
 
-	// Data variables for drawing the images
-	sf::Sprite m_bullet;
-	sf::Texture const &m_texture;
+	// Movement speed.
+	double m_speed { s_MAX_SPEED };
 
-	thor::Timer m_rateOfFire;
-	sf::Time m_fireTime;
+	// A sprite for the projectile.
+	sf::Sprite m_projectile;
 
-	// data variables for collision detection
-	std::vector<sf::Sprite>& m_wallSprites;
-	std::vector<sf::Sprite>& m_enemySprites;
-
-	// Bool to check if bullet has been shot
-	bool shot = false;
-
-	bool shooting = false;
-
-	// Players accuracy in the game
-	int accuracy = 1;
-
-	bool bulletInOrbit = false;
-
-	int shotsFired = 1;
+	// The bounding rectangle for this projectile.
+	sf::IntRect m_projectileRect { 5, 178, 10, 6 };
 
 };

@@ -25,12 +25,12 @@
     <ClInclude Include="include\MathUtility.h" />
     <ClInclude Include="include\OrientedBoundingBox.h" />
     <ClInclude Include="include\Projectile.h" />
+    <ClInclude Include="include\ProjectilePool.h" />
     <ClInclude Include="include\ScreenSize.h" />
     <ClInclude Include="include\Tank.h" />
     <ClInclude Include="ParticleSystem.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="include\Projectile.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="src\CollisionDetector.cpp" />
     <ClCompile Include="src\Game.cpp" />
@@ -38,6 +38,8 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\MathUtility.cpp" />
     <ClCompile Include="src\OrientedBoundingBox.cpp" />
+    <ClCompile Include="src\Projectile.cpp" />
+    <ClCompile Include="src\ProjectilePool.cpp" />
     <ClCompile Include="src\Tank.cpp" />
   </ItemGroup>
   <ItemGroup>

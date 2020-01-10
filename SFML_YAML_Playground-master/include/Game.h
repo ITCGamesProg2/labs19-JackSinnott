@@ -7,6 +7,7 @@
 #include "Thor/Time.hpp"
 #include <string.h>
 #include "Projectile.h"
+#include "ProjectilePool.h"
 #include <ctime>
 #include <stdlib.h>
 #include <iostream>
@@ -110,11 +111,6 @@ protected:
 	/// </summary>
 	void scoreOutput();
 
-	/// <summary>
-	/// @brief Checks for collision between either walls or enemies
-	/// </summary>
-	void bulletCollisions(int t_index, int t_totalShotsFired);
-
 
 private:
 	// main window
@@ -167,9 +163,7 @@ private:
 	// Player's score count
 	int score = 0;
 
-	
-
-	
+	ProjectilePool m_pool;
 
 	// Controls sprites near end of there lifetime
 	bool enemyNearlyTimedOut = false;
