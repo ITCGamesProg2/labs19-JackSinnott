@@ -11,6 +11,7 @@ static double const MS_PER_UPDATE = 10.0;
 Game::Game()
 	: m_window(sf::VideoMode(ScreenSize::s_height, ScreenSize::s_width, 32), "SFML Playground", sf::Style::Default)
 	, m_tank(m_texture, m_wallSprites, m_enemySprites)
+	, m_aiTank(m_texture, m_wallSprites)
 	
 {
 	m_window.setVerticalSyncEnabled(true);
@@ -81,6 +82,8 @@ Game::Game()
 	generateWalls();
 	generateEnemies();
 	randomTankSpawn();
+	// Populate the obstacle list and set the AI tank position
+	m_aiTank.init(m_level.m_aiTank.m_position);
 	// --------------------------------------------------------------------------------------------------------------------
 	
 }
@@ -324,7 +327,7 @@ void Game::update(double dt)
 		enemyUpdatedPosition();
 	}
 	
-	
+	m_aiTank.update(m_tank, dt);
 
 	if (m_stopWatch.getElapsedTime().asMilliseconds() > 8000)
 	{
@@ -351,7 +354,8 @@ void Game::render()
 
 	m_window.draw(m_bgSprite);
 	m_tank.render(m_window);
-	
+	m_aiTank.render(m_window);
+
 	m_pool.render(m_window);
 	m_window.draw(HUD_Text);
 

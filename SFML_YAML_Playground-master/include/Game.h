@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include <fstream>
+#include <tankAI.h>
 
 
 
@@ -127,6 +128,9 @@ private:
 
 	// An instance representing the player controlled tank.
 	Tank m_tank;
+
+	// An instance representing the ai Tank
+	TankAi m_aiTank;
 
 	// An instance representing the tanks bullets
 	Projectile m_bullets;

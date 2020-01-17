@@ -72,7 +72,7 @@ void Tank::setPosition(int x, int y)
 	m_turret.setPosition(x, y);
 }
 
-sf::Vector2f Tank::getPosition()
+sf::Vector2f Tank::getPosition()  const
 {
 	return position;
 }

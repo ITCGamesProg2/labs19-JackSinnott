@@ -26,7 +26,7 @@ public:
 	// @brief Assigns position in window to tank
 	void setPosition(int x, int y);
 
-	sf::Vector2f  getPosition();
+	sf::Vector2f getPosition() const;
 
 	/// <summary>
 	/// @brief Decreases the speed by 1, min speed is capped at -100.
