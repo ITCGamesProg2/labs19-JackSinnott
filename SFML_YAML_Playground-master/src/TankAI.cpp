@@ -170,9 +170,16 @@ const sf::CircleShape TankAi::findMostThreateningObstacle()
 		}
 	}
 	// get the distance between ahead and mostThreatening centre
+	if (MathUtility::distance(m_ahead, mostThreatening.getPosition()) > mostThreatening.getRadius() * 0.9)
+	{
+		return sf::CircleShape(0);
+	}
 	// if barely inside the circle
 	//   return sf::CircleShape(0);
-	return mostThreatening;
+	else
+	{
+		return mostThreatening;
+	}
 }
 
 ////////////////////////////////////////////////////////////
