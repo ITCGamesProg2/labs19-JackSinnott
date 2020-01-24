@@ -54,9 +54,11 @@ private:
 
 	void updateMovement(double dt);
 
-	sf::Vector2f seek(sf::Vector2f playerPosition) const;
+	sf::Vector2f seek(sf::Vector2f playerPosition);
 
 	sf::Vector2f collisionAvoidance();
+
+	sf::Vector2f getPosition() const;
 
 	const sf::CircleShape findMostThreateningObstacle();
 
@@ -81,11 +83,15 @@ private:
 	// Steering vector.
 	sf::Vector2f m_steering;
 
+	bool foundCircle;
+
 	// The ahead vector.
 	sf::Vector2f m_ahead;
 
 	// The half-ahead vector.
 	sf::Vector2f m_halfAhead;
+
+	static float constexpr MASS{ 100.0F };
 
 	// The maximum see ahead range.
 	static float constexpr MAX_SEE_AHEAD{ 50.0f };

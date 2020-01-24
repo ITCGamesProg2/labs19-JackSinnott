@@ -5,7 +5,7 @@ tank:
    max_projectiles: 10
    reload_time: 1000  
 ai_tank:
-   position: {x: 400, y: 700}
+   position: {x: 150, y: 800}
    max_projectiles: 10
    reload_time: 1000  
 projectile:

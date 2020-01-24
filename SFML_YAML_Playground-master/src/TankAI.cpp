@@ -68,6 +68,19 @@ void TankAi::update(Tank const & playerTank, double dt)
 		m_aiBehaviour = AiBehaviour::SEEK_PLAYER;
 	}
 
+	sf::Vector2f acceleration; // ADD THIS
+	switch (m_aiBehaviour)
+	{
+	case AiBehaviour::SEEK_PLAYER:
+		m_steering += thor::unitVector(vectorToPlayer);
+		m_steering += collisionAvoidance();
+		m_steering = MathUtility::truncate(m_steering, MAX_FORCE);
+		acceleration = m_steering / MASS;  // ADD THIS
+		// Comment the line below out:
+		// m_velocity = MathUtility::truncate(m_velocity + m_steering, MAX_SPEED);
+		// Add the new line below:
+		m_velocity = MathUtility::truncate(m_velocity + acceleration, MAX_SPEED);
+	}
 	updateMovement(dt);
 }
 
@@ -100,10 +113,13 @@ void TankAi::init(sf::Vector2f position)
 }
 
 ////////////////////////////////////////////////////////////
-sf::Vector2f TankAi::seek(sf::Vector2f playerPosition) const
+sf::Vector2f TankAi::seek(sf::Vector2f playerPosition)  
 {
-	// This line is simply a placeholder...
-	return sf::Vector2f(0, 1);
+	
+	return playerPosition - m_tankBase.getPosition();
+	/*m_steering = playerPosition - m_tankBase.getPosition();
+	m_velocity += thor::unitVector(m_steering) * MAX_SPEED;
+	return m_velocity;*/
 }
 
 ////////////////////////////////////////////////////////////
@@ -114,6 +130,9 @@ sf::Vector2f TankAi::collisionAvoidance()
 	m_ahead = m_tankBase.getPosition() + headingVector;
 	m_halfAhead = m_tankBase.getPosition() + (headingVector * 0.5f);
 	const sf::CircleShape mostThreatening = findMostThreateningObstacle();
+	//float dynamicLength = thor::squaredLength(m_velocity) / MAX_SPEED;
+	//m_ahead = m_tankBase.getPosition() + thor::unitVector(m_velocity) * dynamicLength;
+	
 	sf::Vector2f avoidance(0, 0);
 	if (mostThreatening.getRadius() != 0.0)
 	{		
@@ -129,12 +148,30 @@ sf::Vector2f TankAi::collisionAvoidance()
 	return avoidance;
 }
 
-////////////////////////////////////////////////////////////
-const sf::CircleShape TankAi::findMostThreateningObstacle()
+sf::Vector2f TankAi::getPosition() const
 {
-	// The initialisation of mostThreatening is just a placeholder...
-	sf::CircleShape mostThreatening = m_obstacles.at(0);
+	return m_tankBase.getPosition();
+}
 
+////////////////////////////////////////////////////////////
+const sf::CircleShape TankAi::findMostThreateningObstacle() 
+{
+	
+	// The initialisation of mostThreatening is just a placeholder...
+	sf::CircleShape mostThreatening;
+	sf::CircleShape m_obstacle;
+
+	for (int i = 0; i < m_obstacles.size(); i++)
+	{
+		m_obstacle = m_obstacles.at(i);
+		if (MathUtility::lineIntersectsCircle(m_ahead, m_halfAhead, m_obstacle))
+		{
+			mostThreatening = m_obstacles[i];
+		}
+	}
+	// get the distance between ahead and mostThreatening centre
+	// if barely inside the circle
+	//   return sf::CircleShape(0);
 	return mostThreatening;
 }
 
