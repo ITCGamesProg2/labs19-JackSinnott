@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GameState.h" />
+    <ClInclude Include="HUD.h" />
     <ClInclude Include="include\CollisionDetector.h" />
     <ClInclude Include="include\Game.h" />
     <ClInclude Include="include\LevelLoader.h" />
@@ -32,6 +34,7 @@
     <ClInclude Include="ParticleSystem.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="HUD.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="src\CollisionDetector.cpp" />
     <ClCompile Include="src\Game.cpp" />

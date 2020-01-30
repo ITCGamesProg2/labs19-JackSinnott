@@ -13,7 +13,8 @@
 #include <iostream>
 #include <fstream>
 #include <tankAI.h>
-
+#include <GameState.h>
+#include <HUD.h>
 
 
 /// <summary>
@@ -180,5 +181,12 @@ private:
 
 	sf::Text getPlayerName;
 
+	// The initial game state set to GAME_RUNNING
+	GameState m_gameState{ GameState::GAME_RUNNING };
 
+	// The font to be used for the HUD.
+	sf::Font m_font;
+
+	// The game HUD instance.
+	HUD m_hud;
 };

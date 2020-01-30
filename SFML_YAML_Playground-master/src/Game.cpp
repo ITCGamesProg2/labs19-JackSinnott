@@ -12,6 +12,7 @@ Game::Game()
 	: m_window(sf::VideoMode(ScreenSize::s_height, ScreenSize::s_width, 32), "SFML Playground", sf::Style::Default)
 	, m_tank(m_texture, m_wallSprites, m_enemySprites)
 	, m_aiTank(m_texture, m_wallSprites)
+	, m_hud(m_font) // Add this line
 	
 {
 	m_window.setVerticalSyncEnabled(true);
@@ -85,7 +86,13 @@ Game::Game()
 	// Populate the obstacle list and set the AI tank position
 	m_aiTank.init(m_level.m_aiTank.m_position);
 	// --------------------------------------------------------------------------------------------------------------------
-	
+
+	if (!m_font.loadFromFile("./resources/fonts/akashi.ttf"))
+	{
+		std::string s("Error loading font");
+		throw std::exception(s.c_str());
+	}
+
 }
 
 ////////////////////////////////////////////////////////////

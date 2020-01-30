@@ -1,6 +1,6 @@
 #include "Tank.h"
 #include "LevelLoader.h"
-#include "CollisionDetector.h"
+
 
 /// <summary>
 /// @brief Constructor that stores drawable state (texture, sprite) for the tank.
@@ -147,6 +147,7 @@ bool Tank::checkWallCollision()
 	return false;
 }
 
+
 void Tank::deflect()
 {
 	// In case tank was rotating.
@@ -239,6 +240,16 @@ void Tank::handleKeyInput()
 	}
 }
 
+
+sf::Sprite Tank::getTurret()
+{
+	return m_turret;
+}
+
+sf::Sprite Tank::getTankBase()
+{
+	return m_tankBase;
+}
 
 ////////////////////////////////////////////////////////////
 void Tank::requestFire()

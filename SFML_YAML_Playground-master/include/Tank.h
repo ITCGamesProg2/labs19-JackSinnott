@@ -3,6 +3,7 @@
 #include "MathUtility.h"
 #include "CollisionDetector.h"
 #include "ProjectilePool.h"
+#include "TankAI.h"
 
 
 /// <summary>
@@ -53,6 +54,10 @@ public:
 /// <returns>True if collision detected between tank and wall.</returns>
 	bool checkWallCollision();
 
+	sf::Sprite getTurret();
+
+	sf::Sprite getBase();
+
 	/// <summary>
 /// @brief Stops the tank if moving and applies a small increase in speed in the opposite direction of travel.
 /// If the tank speed is currently 0, the rotation is set to a value that is less than the previous rotation value
@@ -100,6 +105,8 @@ public:
 
 	// The last rotation before update as applied to the turret.
 	double m_previousTurretRotation;
+
+	
 
 	/// <summary>
 	/// @brief Generates a request to fire a projectile.

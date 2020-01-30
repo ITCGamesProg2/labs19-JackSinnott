@@ -5,6 +5,7 @@
 #include <Thor/Vectors.hpp>
 #include <iostream>
 #include <queue>
+#include <CollisionDetector.h>
 
 class TankAi
 {
@@ -42,6 +43,13 @@ public:
 	/// <param name="position">An x,y position</param>
 	/// </summary>
 	void init(sf::Vector2f position);
+
+	/// <summary>
+	/// @brief Checks for collision between the AI and player tanks.
+	/// </summary>
+	/// <param name="player">The player tank instance</param>
+	/// <returns>true if collision detected between AI and player tanks</returns>
+	bool collidesWithPlayer(Tank const& playerTank) const;
 
 	enum class AiType
 	{
