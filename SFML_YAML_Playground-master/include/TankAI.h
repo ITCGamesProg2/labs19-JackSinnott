@@ -51,6 +51,8 @@ public:
 	/// <returns>true if collision detected between AI and player tanks</returns>
 	bool collidesWithPlayer(Tank const& playerTank) const;
 
+	sf::Sprite getenemySprite() const;
+
 	enum class AiType
 	{
 		AI_ID_NONE,

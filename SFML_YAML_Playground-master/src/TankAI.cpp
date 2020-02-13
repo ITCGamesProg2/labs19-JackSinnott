@@ -123,6 +123,11 @@ bool TankAi::collidesWithPlayer(Tank const& playerTank) const
 	return false;
 }
 
+sf::Sprite TankAi::getenemySprite() const
+{
+	return m_tankBase;
+}
+
 
 
 

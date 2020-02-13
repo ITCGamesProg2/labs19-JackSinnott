@@ -24,6 +24,7 @@ void HUD::update(GameState const& gameState)
 	switch (gameState)
 	{
 	case GameState::GAME_RUNNING:
+		m_gameStateText.setString("Game Running");
 		break;
 	case GameState::GAME_WIN:
 		m_gameStateText.setString("You Won");

@@ -3,7 +3,7 @@
 #include "MathUtility.h"
 #include "CollisionDetector.h"
 #include "ProjectilePool.h"
-#include "TankAI.h"
+
 
 
 /// <summary>
@@ -54,9 +54,9 @@ public:
 /// <returns>True if collision detected between tank and wall.</returns>
 	bool checkWallCollision();
 
-	sf::Sprite getTurret();
+	sf::Sprite getTurret() const;
 
-	sf::Sprite getBase();
+	sf::Sprite getBase() const;
 
 	/// <summary>
 /// @brief Stops the tank if moving and applies a small increase in speed in the opposite direction of travel.

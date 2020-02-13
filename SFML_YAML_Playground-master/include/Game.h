@@ -15,6 +15,7 @@
 #include <tankAI.h>
 #include <GameState.h>
 #include <HUD.h>
+#include <string>
 
 
 /// <summary>
@@ -103,15 +104,7 @@ protected:
 	/// <returns></returns>
 	void randomTankSpawn();
 
-	/// <summary>
-	/// @brief Function to have enemy flash when timealmost up
-	/// </summary>
-	void EnemyTimeOut();
-
-	/// <summary>
-	/// @brief Controls any sf::text for the hud in game
-	/// </summary>
-	void scoreOutput();
+	
 
 
 private:
@@ -125,7 +118,7 @@ private:
 	// A texture for the sprite sheet
 	sf::Texture m_texture;
 
-	sf::Texture m_targetTexture;
+
 
 	// An instance representing the player controlled tank.
 	Tank m_tank;
@@ -170,6 +163,7 @@ private:
 
 	ProjectilePool m_pool;
 
+	double timeForGameRestart;
 	// Controls sprites near end of there lifetime
 	bool enemyNearlyTimedOut = false;
 

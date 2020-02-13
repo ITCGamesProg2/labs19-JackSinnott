@@ -241,12 +241,12 @@ void Tank::handleKeyInput()
 }
 
 
-sf::Sprite Tank::getTurret()
+sf::Sprite Tank::getTurret() const
 {
 	return m_turret;
 }
 
-sf::Sprite Tank::getTankBase()
+sf::Sprite Tank::getBase() const
 {
 	return m_tankBase;
 }

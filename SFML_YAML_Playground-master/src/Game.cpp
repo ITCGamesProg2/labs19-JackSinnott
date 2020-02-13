@@ -49,10 +49,6 @@ Game::Game()
 	{
 		std::cout << "Error loading background image" << std::endl;
 	}
-	if (!m_targetTexture.loadFromFile("./resources/images/target.png"))
-	{
-		std::cout << "Error loading target texture" << std::endl;
-	}
 	if (!m_texture.loadFromFile("./resources/images/SpriteSheet.png"))
 	{
 		std::string s("Error loading texture");
@@ -87,7 +83,7 @@ Game::Game()
 	m_aiTank.init(m_level.m_aiTank.m_position);
 	// --------------------------------------------------------------------------------------------------------------------
 
-	if (!m_font.loadFromFile("./resources/fonts/akashi.ttf"))
+	if (!m_font.loadFromFile("./resources/fonts/calibri.ttf"))
 	{
 		std::string s("Error loading font");
 		throw std::exception(s.c_str());
@@ -186,13 +182,13 @@ void Game::generateEnemies()
 {
 	//sf::IntRect enemyRect(107, 42, 77, 43);
 	// Create the enemies
-	for (EnemyData const& enemy : m_level.m_enemies)
-	{
-		enemySprite.setTexture(m_targetTexture);
-		//enemySprite.setTextureRect(enemyRect);
-		enemySprite.setScale(.05, .05);
-		
-	}
+	//for (EnemyData const& enemy : m_level.m_enemies)
+	//{
+	//	enemySprite.setTexture();
+	//	//enemySprite.setTextureRect(enemyRect);
+	//	enemySprite.setScale(.05, .05);
+	//	
+	//}
 }
 
 ///////////////////////////////////////////////////////
@@ -252,63 +248,8 @@ void Game::randomTankSpawn()
 	}
 }
 
-void Game::EnemyTimeOut()
-{
-	if (m_stopWatch.getElapsedTime().asMilliseconds() > 6000 && m_stopWatch.getElapsedTime().asMilliseconds() < 6150)
-	{
-		enemyNearlyTimedOut = true;
-	}
-	if (m_stopWatch.getElapsedTime().asMilliseconds() > 6200 && m_stopWatch.getElapsedTime().asMilliseconds() < 6350)
-	{
-		enemyNearlyTimedOut = false;
-	}
-	if (m_stopWatch.getElapsedTime().asMilliseconds() > 6400 && m_stopWatch.getElapsedTime().asMilliseconds() < 6550)
-	{
-		enemyNearlyTimedOut = true;
-	}
-	if (m_stopWatch.getElapsedTime().asMilliseconds() > 6600 && m_stopWatch.getElapsedTime().asMilliseconds() < 6750)
-	{
-		enemyNearlyTimedOut = false;
-	}
-	if (m_stopWatch.getElapsedTime().asMilliseconds() > 6800 && m_stopWatch.getElapsedTime().asMilliseconds() < 6950)
-	{
-		enemyNearlyTimedOut = true;
-	}
-	if (m_stopWatch.getElapsedTime().asMilliseconds() > 7000 && m_stopWatch.getElapsedTime().asMilliseconds() < 7150)
-	{
-		enemyNearlyTimedOut = false;
-	}
-	if (m_stopWatch.getElapsedTime().asMilliseconds() > 7200 && m_stopWatch.getElapsedTime().asMilliseconds() < 7350)
-	{
-		enemyNearlyTimedOut = true;
-	}
-	if (m_stopWatch.getElapsedTime().asMilliseconds() > 7400 && m_stopWatch.getElapsedTime().asMilliseconds() < 7550)
-	{
-		enemyNearlyTimedOut = false;
-	}
-	if (m_stopWatch.getElapsedTime().asMilliseconds() > 7600 && m_stopWatch.getElapsedTime().asMilliseconds() < 7750)
-	{
-		enemyNearlyTimedOut = true;
-	}
-	if (m_stopWatch.getElapsedTime().asMilliseconds() > 7800 && m_stopWatch.getElapsedTime().asMilliseconds() < 7950)
-	{
-		enemyNearlyTimedOut = false;
-	}
-	if (enemyNearlyTimedOut)
-	{
-		m_enemySprites.at(m_nextTarget).setColor(sf::Color(255, 255, 255, 0));
-	}
-	else if (!enemyNearlyTimedOut)
-	{
-		m_enemySprites.at(m_nextTarget).setColor(sf::Color(255, 255, 255, 255));
-	}
-}
 
-void Game::scoreOutput()
-{
-	
-	
-}
+
 
 
 
@@ -317,24 +258,39 @@ void Game::scoreOutput()
 void Game::update(double dt)
 {
 	m_time.start();
-	m_tank.update(dt);
 	
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+	m_hud.update(m_gameState);
+	switch (m_gameState)
 	{
-		
+	case GameState::GAME_RUNNING:
+		m_tank.update(dt);
+		m_aiTank.update(m_tank, dt);
+		break;
+	case GameState::GAME_WIN:
+		break;
+	case GameState::GAME_LOSE:
+		timeForGameRestart += dt;
+		if (timeForGameRestart >= 600)
+		{
+			randomTankSpawn();
+			m_aiTank.init(m_level.m_aiTank.m_position);
+			m_gameState = GameState::GAME_RUNNING;
+			timeForGameRestart = 0;
+		}
+		break;
+	default:
+		break;
 	}
 	
-	scoreOutput();
-	if (m_stopWatch.getElapsedTime().asMilliseconds() > 6000)
-	{
-		EnemyTimeOut();
-	}
 	if (switchEnemy)
 	{
 		enemyUpdatedPosition();
 	}
 	
-	m_aiTank.update(m_tank, dt);
+	if (m_aiTank.collidesWithPlayer(m_tank))
+	{
+		m_gameState = GameState::GAME_LOSE;
+	}
 
 	if (m_stopWatch.getElapsedTime().asMilliseconds() > 8000)
 	{
@@ -344,13 +300,12 @@ void Game::update(double dt)
 		}
 		m_nextTarget = (m_nextTarget + 1) % m_enemySprites.size();
 		switchEnemy = true;
-		m_stopWatch.restart();
 	}
 
-	if (m_time.isExpired())
-	{
-		m_window.close();
-	}
+	//if (m_time.isExpired())
+	//{
+	//	m_window.close();
+	//}
 	
 }
 
@@ -365,7 +320,7 @@ void Game::render()
 
 	m_pool.render(m_window);
 	m_window.draw(HUD_Text);
-
+	m_hud.render(m_window);
 	for (sf::Sprite& wall : m_wallSprites)
 	{
 		m_window.draw(wall);
