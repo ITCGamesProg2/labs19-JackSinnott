@@ -3,6 +3,7 @@
 #include "MathUtility.h"
 #include "CollisionDetector.h"
 #include "ProjectilePool.h"
+#include "TankAI.h"
 
 
 
@@ -16,7 +17,7 @@ class Tank
 public:	
 	Tank(sf::Texture const& texture, std::vector<sf::Sprite>& wallSprites, std::vector<sf::Sprite>& enemySprite);
 
-	void update(double dt);
+	void update(double dt, TankAi &t_enemyTank);
 	void render(sf::RenderWindow & window);
 	
 	/// <summary>
@@ -143,6 +144,7 @@ private:
 
 	// Bool to check if rotation has been applied
 	bool m_enableRotation = true;
+
 
 	// Instance of the projectile pool so the tank can shoot bullets
 	ProjectilePool m_pool;

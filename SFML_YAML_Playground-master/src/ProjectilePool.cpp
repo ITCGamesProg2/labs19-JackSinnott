@@ -13,15 +13,23 @@ void ProjectilePool::create(sf::Texture const & texture, double x, double y, dou
 }
 
 ////////////////////////////////////////////////////////////
-void ProjectilePool::update(double dt, std::vector<sf::Sprite> & wallSprites)
+int ProjectilePool::update(double dt, std::vector<sf::Sprite>& wallSprites, std::pair<sf::Sprite, sf::Sprite> aiTankSprites)
 {	
+	std::pair<bool, bool> result;
 	// The number of active projectiles.
+	hitCount = 0;
 	int activeCount = 0;
 	// Assume the pool is not full initially.
+	
+
 	m_poolFull = false;
 	for (int i = 0; i < s_POOL_SIZE; i++)
 	{
-		if( !m_projectiles.at(i).update(dt, wallSprites))
+		result = m_projectiles.at(i).update(dt, wallSprites, aiTankSprites);
+
+		
+
+		if (result.first)
 		{
 			// If this projectile has expired, make it the next available.
 			m_nextAvailable = i;
@@ -31,12 +39,19 @@ void ProjectilePool::update(double dt, std::vector<sf::Sprite> & wallSprites)
 			// So we know how many projectiles are active.
 			activeCount++;
 		}
+
+		if (result.second)
+		{
+			hitCount++;
+		}
 	}
 	// If no projectiles available, set a flag.
 	if (s_POOL_SIZE == activeCount)
 	{		
 		m_poolFull = true;
 	}
+	
+	return hitCount;
 }
 
 ////////////////////////////////////////////////////////////

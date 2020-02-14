@@ -1,5 +1,5 @@
 #include "Projectile.h"
-
+#include <iostream>
 ////////////////////////////////////////////////////////////
 void Projectile::init(sf::Texture const & texture, double x, double y, double rotation)
 {	
@@ -13,12 +13,16 @@ void Projectile::init(sf::Texture const & texture, double x, double y, double ro
 }
 
 ////////////////////////////////////////////////////////////
-bool Projectile::update(double dt, std::vector<sf::Sprite> & wallSprites)
+std::pair<bool, bool> Projectile::update(double dt, std::vector<sf::Sprite> & wallSprites, std::pair<sf::Sprite, sf::Sprite> aiTankSprite)
 {
+	std::pair<bool, bool> result;
+	
+	
 	if (!inUse())
 	{
 		// If this projectile is not in use, there is no update routine to perform.
-		return false;
+		result.first =false;
+		return result;
 	}
 	
 	sf::Vector2f position = m_projectile.getPosition();
@@ -33,6 +37,7 @@ bool Projectile::update(double dt, std::vector<sf::Sprite> & wallSprites)
 	}
 	else 
 	{
+		
 		// Still on-screen, have we collided with a wall?
 		for (sf::Sprite const & sprite : wallSprites)
 		{
@@ -42,8 +47,26 @@ bool Projectile::update(double dt, std::vector<sf::Sprite> & wallSprites)
 				m_speed = 0;
 			}
 		}		
+
+		if (CollisionDetector::collision(m_projectile, aiTankSprite.first))
+		{	
+			std::cout << "hit" << std::endl;
+			result.second = true;
+			m_speed = 0;
+		}
+		else if (CollisionDetector::collision(m_projectile, aiTankSprite.second))
+		{	
+			std::cout << "hit" << std::endl;
+			result.second = true;
+			m_speed = 0;
+		}
+		else
+		{
+			result.second = false;
+		}
 	}
-	return m_speed == s_MAX_SPEED;
+	result.first = (m_speed == s_MAX_SPEED);
+	return result;
 }
 
 ////////////////////////////////////////////////////////////

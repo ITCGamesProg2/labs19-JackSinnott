@@ -123,9 +123,25 @@ bool TankAi::collidesWithPlayer(Tank const& playerTank) const
 	return false;
 }
 
-sf::Sprite TankAi::getenemySprite() const
+void TankAi::takeDamage()
 {
-	return m_tankBase;
+	if (m_health > 0)
+	{
+		m_health--;
+	}
+}
+
+int TankAi::getHealth() const
+{
+	return m_health;
+}
+
+std::pair<sf::Sprite, sf::Sprite> TankAi::getenemySprite() const
+{
+	std::pair<sf::Sprite, sf::Sprite> aiTankSprite;
+	aiTankSprite.first = m_tankBase;
+	aiTankSprite.second = m_turret;
+	return aiTankSprite;
 }
 
 

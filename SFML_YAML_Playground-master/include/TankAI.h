@@ -1,11 +1,12 @@
 #pragma once
 #include "MathUtility.h"
-#include "Tank.h"
 #include <SFML/Graphics.hpp>
 #include <Thor/Vectors.hpp>
 #include <iostream>
 #include <queue>
 #include <CollisionDetector.h>
+
+class Tank;
 
 class TankAi
 {
@@ -51,7 +52,11 @@ public:
 	/// <returns>true if collision detected between AI and player tanks</returns>
 	bool collidesWithPlayer(Tank const& playerTank) const;
 
-	sf::Sprite getenemySprite() const;
+	void takeDamage();
+
+	int getHealth() const;
+
+	std::pair<sf::Sprite,sf::Sprite> getenemySprite() const;
 
 	enum class AiType
 	{
@@ -95,6 +100,9 @@ private:
 
 	bool foundCircle;
 
+	// Health value for enemy tank
+	int m_health{ 5 };
+
 	// The ahead vector.
 	sf::Vector2f m_ahead;
 
@@ -127,4 +135,4 @@ private:
 
 
 };
-
+#include "Tank.h"

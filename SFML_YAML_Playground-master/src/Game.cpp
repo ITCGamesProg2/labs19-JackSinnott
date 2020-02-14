@@ -9,7 +9,7 @@ static double const MS_PER_UPDATE = 10.0;
 
 ////////////////////////////////////////////////////////////
 Game::Game()
-	: m_window(sf::VideoMode(ScreenSize::s_height, ScreenSize::s_width, 32), "SFML Playground", sf::Style::Default)
+	: m_window(sf::VideoMode(ScreenSize::s_width, ScreenSize::s_height, 32), "SFML Playground", sf::Style::Default)
 	, m_tank(m_texture, m_wallSprites, m_enemySprites)
 	, m_aiTank(m_texture, m_wallSprites)
 	, m_hud(m_font) // Add this line
@@ -260,10 +260,15 @@ void Game::update(double dt)
 	m_time.start();
 	
 	m_hud.update(m_gameState);
+
+	if (m_aiTank.getHealth() == 0)
+	{
+		m_gameState = GameState::GAME_WIN;
+	}
 	switch (m_gameState)
 	{
 	case GameState::GAME_RUNNING:
-		m_tank.update(dt);
+		m_tank.update(dt, m_aiTank);
 		m_aiTank.update(m_tank, dt);
 		break;
 	case GameState::GAME_WIN:

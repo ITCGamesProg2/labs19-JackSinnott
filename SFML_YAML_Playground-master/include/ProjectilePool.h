@@ -31,7 +31,7 @@ public:
 	/// </summary>
 	/// <param name="dt">The delta time</param>	
 	/// <param name="rotation">A reference to the container of wall sprites</param>
-	void update(double dt, std::vector<sf::Sprite> & wallSprites);
+	int ProjectilePool::update(double dt, std::vector<sf::Sprite>& wallSprites, std::pair<sf::Sprite, sf::Sprite> aiTankSprites);
 
 	/// <summary>
 	/// @brief Draws all active projectiles.
@@ -51,4 +51,7 @@ private:
 
 	// A flag indicating whether there are any projectiles available (initially they are).
 	bool m_poolFull { false };
+
+	// An indication of how many bullets have made contact with environmental factors
+	int hitCount;
 };

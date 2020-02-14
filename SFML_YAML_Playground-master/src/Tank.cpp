@@ -19,7 +19,7 @@ Tank::Tank(sf::Texture const& texture, std::vector<sf::Sprite>& wallSprites, std
 	initSprites();
 }
 
-void Tank::update(double dt)
+void Tank::update(double dt, TankAi &t_enemyTank)
 {
 
 	position.x = (m_tankBase.getPosition().x + cos(m_rotation * MathUtility::DEG_TO_RAD) * m_speed * (dt / 1000));
@@ -41,12 +41,19 @@ void Tank::update(double dt)
 		deflect();
 	}
 
-	m_pool.update(dt, m_wallSprites);
-	m_shootTimer -= dt;
+	if (m_pool.update(dt, m_wallSprites, t_enemyTank.getenemySprite()) > 0)
+	{
+  		t_enemyTank.takeDamage();
+	}
+	
 	if (m_shootTimer <= 0)
 	{
 		m_shootTimer = s_TIME_BETWEEN_SHOTS;
 		m_fireRequested = false;
+	}
+	else if (m_fireRequested == true && m_shootTimer > 0)
+	{
+		m_shootTimer -= dt;
 	}
 }
 
@@ -256,8 +263,7 @@ void Tank::requestFire()
 {
 	m_fireRequested = true;
 	if (m_shootTimer == s_TIME_BETWEEN_SHOTS)
-	{
-		
+	{		
 		sf::Vector2f tipOfTurret(m_turret.getPosition().x + 2.0f, m_turret.getPosition().y);
 		tipOfTurret.x += std::cos(MathUtility::DEG_TO_RAD * m_turret.getRotation()) * ((m_turret.getLocalBounds().top + m_turret.getLocalBounds().height) * 1.7f);
 		tipOfTurret.y += std::sin(MathUtility::DEG_TO_RAD * m_turret.getRotation()) * ((m_turret.getLocalBounds().top + m_turret.getLocalBounds().height) * 1.7f);
