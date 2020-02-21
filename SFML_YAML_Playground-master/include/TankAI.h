@@ -8,6 +8,12 @@
 
 class Tank;
 
+enum class AIState
+{
+	PATROL_MAP,
+	ATTACK_PLAYER
+};
+
 class TankAi
 {
 public:
@@ -53,6 +59,8 @@ public:
 	bool collidesWithPlayer(Tank const& playerTank) const;
 
 	void takeDamage();
+
+	void setHealth(int t_health);
 
 	int getHealth() const;
 

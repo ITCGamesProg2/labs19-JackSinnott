@@ -131,6 +131,11 @@ void TankAi::takeDamage()
 	}
 }
 
+void TankAi::setHealth(int t_health)
+{
+	m_health = t_health;
+}
+
 int TankAi::getHealth() const
 {
 	return m_health;

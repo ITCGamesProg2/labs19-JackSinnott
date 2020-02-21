@@ -272,6 +272,13 @@ void Game::update(double dt)
 		m_aiTank.update(m_tank, dt);
 		break;
 	case GameState::GAME_WIN:
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
+		{
+			randomTankSpawn();
+			m_aiTank.init(m_level.m_aiTank.m_position);
+			m_gameState = GameState::GAME_RUNNING;
+			m_aiTank.setHealth(5);
+		}
 		break;
 	case GameState::GAME_LOSE:
 		timeForGameRestart += dt;
